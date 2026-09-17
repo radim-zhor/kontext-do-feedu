@@ -1,0 +1,350 @@
+<!doctype html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Inventura kontextu: kde ve firmě leží kontext a jak vypadají čtyři vrstvy u jednoho vašeho produktu.">
+<meta name="robots" content="noindex">
+<title>Inventura kontextu</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=JetBrains+Mono:wght@400&family=Source+Sans+3:wght@400;600&display=swap">
+<style>
+  :root {
+    color-scheme: light dark;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+
+    --ground: #f6f6f3;
+    --surface: #ffffff;
+    --sunk: #eceee7;
+    --ink: #1b1f1a;
+    --ink-soft: #4c554a;
+    --ink-faint: #7b857a;
+    --rule: #d8ddd4;
+    --accent: #37702a;
+    --accent-soft: #e9f4e0;
+    --on-accent: #ffffff;
+    --l1: #37702a;
+    --l2: #1f6a7d;
+    --l3: #8a5a12;
+    --l4: #6d4a86;
+
+    --s--1: clamp(.82rem, .8rem + .1vw, .88rem);
+    --s-0: clamp(1.04rem, 1rem + .2vw, 1.12rem);
+    --s-1: clamp(1.18rem, 1.1rem + .3vw, 1.35rem);
+    --s-3: clamp(1.9rem, 1.55rem + 1.5vw, 2.8rem);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ground: #14170f; --surface: #1d2118; --sunk: #0e1109;
+      --ink: #e9ece4; --ink-soft: #b0b8a9; --ink-faint: #838c7d;
+      --rule: #333a2c; --accent: #9fd97f; --accent-soft: #1f2a16;
+      --on-accent: #14170f;
+      --l1: #9fd97f; --l2: #7cc4d8; --l3: #ddab5e; --l4: #b79ad3;
+    }
+  }
+  :root[data-theme="dark"] {
+    --ground: #14170f; --surface: #1d2118; --sunk: #0e1109;
+    --ink: #e9ece4; --ink-soft: #b0b8a9; --ink-faint: #838c7d;
+    --rule: #333a2c; --accent: #9fd97f; --accent-soft: #1f2a16;
+    --on-accent: #14170f;
+    --l1: #9fd97f; --l2: #7cc4d8; --l3: #ddab5e; --l4: #b79ad3;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--ground); color: var(--ink);
+    font-family: "Source Sans 3", system-ui, -apple-system, sans-serif;
+    font-size: var(--s-0); line-height: 1.55; -webkit-font-smoothing: antialiased;
+  }
+  img { max-width: 100%; }
+  [hidden] { display: none !important; }
+
+  .wrap { max-width: 38rem; margin-inline: auto; padding-inline: 20px; padding-block: 2.5rem 3rem; }
+
+  h1 {
+    font-family: "Bricolage Grotesque", system-ui, sans-serif;
+    font-weight: 700; font-size: var(--s-3); line-height: 1;
+    letter-spacing: -.02em; margin: 0; text-wrap: balance;
+  }
+  .sub { font-size: var(--s-1); color: var(--ink-soft); margin: .85rem 0 0; text-wrap: pretty; }
+  p { margin: 0 0 .9rem; text-wrap: pretty; }
+  p:last-child { margin-bottom: 0; }
+  strong { font-weight: 600; }
+
+  .phase { margin-top: 2.25rem; }
+  .phase-head { display: flex; align-items: baseline; gap: .6rem; margin-bottom: .2rem; }
+  .phase-tag {
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: .7rem; letter-spacing: .1em; text-transform: uppercase;
+    color: var(--on-accent); background: var(--accent);
+    padding: .15rem .45rem; border-radius: 4px;
+  }
+  .phase-time {
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: .72rem; color: var(--ink-faint); margin-left: auto;
+  }
+  .phase h2 {
+    font-family: "Bricolage Grotesque", system-ui, sans-serif;
+    font-size: var(--s-1); font-weight: 700; margin: 0 0 .35rem;
+  }
+  .phase-lead { color: var(--ink-soft); font-size: var(--s--1); margin-bottom: .9rem; }
+
+  .src-row {
+    display: grid; grid-template-columns: 1.4rem 1fr; gap: .6rem;
+    align-items: start;
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    padding: .6rem .7rem;
+    margin-bottom: .5rem;
+  }
+  .src-row input[type="checkbox"] { width: 1.15rem; height: 1.15rem; margin-top: .18rem; accent-color: var(--accent); }
+  .src-name { font-weight: 600; font-size: var(--s--1); display: block; margin-bottom: .3rem; }
+  .src-row input[type="text"] {
+    font: inherit; font-size: var(--s--1); width: 100%;
+    padding: .35rem .5rem; border: 1px solid var(--rule); border-radius: 5px;
+    background: var(--ground); color: var(--ink);
+  }
+
+  .layer {
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-left: 4px solid var(--lc, var(--accent));
+    border-radius: 8px;
+    padding: .8rem .85rem;
+    margin-bottom: .7rem;
+  }
+  .layer.l1 { --lc: var(--l1); } .layer.l2 { --lc: var(--l2); }
+  .layer.l3 { --lc: var(--l3); } .layer.l4 { --lc: var(--l4); }
+  .layer-head { display: flex; align-items: baseline; gap: .5rem; margin-bottom: .2rem; }
+  .layer-n {
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: .75rem; color: var(--lc); font-weight: 600;
+  }
+  .layer-t { font-weight: 600; }
+  .layer-q { font-size: var(--s--1); color: var(--ink-soft); margin-bottom: .5rem; }
+
+  textarea {
+    font: inherit; font-size: var(--s--1); width: 100%;
+    min-height: 5.5rem; resize: vertical;
+    padding: .55rem .6rem; border: 1px solid var(--rule); border-radius: 6px;
+    background: var(--ground); color: var(--ink); line-height: 1.5;
+  }
+  input:focus-visible, textarea:focus-visible, button:focus-visible, a:focus-visible {
+    outline: 2px solid var(--accent); outline-offset: 2px;
+  }
+  label.field { display: block; font-weight: 600; font-size: var(--s--1); margin-bottom: .35rem; }
+
+  .check {
+    background: var(--accent-soft);
+    border-left: 3px solid var(--accent);
+    border-radius: 0 8px 8px 0;
+    padding: .75rem .9rem;
+    margin-block: 1.1rem;
+    font-size: var(--s--1);
+  }
+  .check strong { display: block; margin-bottom: .2rem; }
+
+  .actions { display: flex; gap: .5rem; flex-wrap: wrap; margin-top: 1.25rem; }
+  .btn {
+    font: inherit; font-size: var(--s--1); font-weight: 600;
+    border: 1px solid var(--accent); border-radius: 7px;
+    padding: .55rem 1.1rem; cursor: pointer;
+    background: var(--accent); color: var(--on-accent);
+  }
+  .btn.ghost { background: transparent; color: var(--accent); }
+  .btn:hover { filter: brightness(1.08); }
+  .btn.done { background: var(--ink-faint); border-color: var(--ink-faint); color: var(--on-accent); }
+
+  .saved { font-size: var(--s--1); color: var(--ink-faint); margin-top: .6rem; }
+
+  footer { border-top: 1px solid var(--rule); padding-top: 1.5rem; margin-top: 2.5rem; font-size: var(--s--1); color: var(--ink-soft); }
+  footer h2 { font-family: "Bricolage Grotesque", system-ui, sans-serif; font-size: var(--s-1); margin: 0 0 .5rem; color: var(--ink); }
+  footer a { color: var(--accent); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <h1>Inventura kontextu</h1>
+  <p class="sub">Vyberte si jeden svůj produkt a projděte s ním tři fáze. Co napíšete, zůstane uložené ve vašem prohlížeči a na konci si to odnesete.</p>
+
+  <section class="phase">
+    <div class="phase-head"><span class="phase-tag">Fáze A</span><span class="phase-time">5 minut</span></div>
+    <h2>Kde kontext leží</h2>
+    <p class="phase-lead">Nepíšete nic nového, děláte inventuru. U každého zdroje zaškrtněte, jestli ho máte, a hlavně dopište, <strong>kdo ho ve firmě vlastní</strong>. Ta druhá otázka je důležitější, protože bez vlastníka se to nikdy neudělá.</p>
+    <div id="sources"></div>
+  </section>
+
+  <section class="phase">
+    <div class="phase-head"><span class="phase-tag">Fáze B</span><span class="phase-time">11 minut</span></div>
+    <h2>Jeden váš produkt</h2>
+    <p class="phase-lead">Tohle je jádro. Vezměte ten produkt, který jste si vybrali, a vyplňte čtyři vrstvy. Tahejte to z hlavy, z recenzí a z dotazů zákazníků, <strong>ne z popisu produktu</strong>. Ten už znáte a je chudý.</p>
+
+    <label class="field" for="produkt">Který produkt</label>
+    <textarea id="produkt" style="min-height:2.6rem" placeholder="název produktu"></textarea>
+
+    <div style="margin-top:1rem" id="layers"></div>
+
+    <div class="check">
+      <strong>Kontrolní otázka ke každé vrstvě</strong>
+      Odpovídá tohle na něco, co by zákazník reálně napsal? Když ne, je to marketingový text a model s ním nic neudělá.
+    </div>
+  </section>
+
+  <section class="phase">
+    <div class="phase-head"><span class="phase-tag">Fáze C</span><span class="phase-time">4 minuty</span></div>
+    <h2>Co nemá nikdo</h2>
+    <p class="phase-lead">Co o vašich produktech neexistuje nikde na internetu? Laboratorní testy, naměřená data, podrobnosti od výrobce, věci, které si 99 % zákazníků nikdy nepřečte. Hledáte jednu věc, kterou můžete publikovat jako první na trhu.</p>
+    <textarea id="unikat" placeholder="jedna věc, kterou můžete publikovat jako první"></textarea>
+  </section>
+
+  <div class="actions">
+    <button class="btn" id="copy" type="button">Zkopírovat vše</button>
+    <button class="btn ghost" id="clear" type="button">Vymazat</button>
+  </div>
+  <p class="saved" id="saved">Ukládá se průběžně do tohoto prohlížeče.</p>
+
+  <footer>
+    <h2>Co s tím dál</h2>
+    <p>To, co jste právě napsali, je kontext pro jeden produkt, sepsaný ručně. <a href="../">Tady je postup</a>, jak totéž udělat pro celý katalog: tři prompty, které vytáhnou kontext z vašich recenzí a článků a složí z něj tabulku k nahrání do feedu.</p>
+  </footer>
+
+</div>
+
+<script>
+  var SOURCES = [
+    "Články a nákupní rádce",
+    "Popisy kategorií a značek",
+    "Recenze zákazníků",
+    "Dotazy na support",
+    "Obchodní podmínky, doprava, vratky",
+    "Materiály od výrobce"
+  ];
+  var LAYERS = [
+    [1, "Produktový kontext", "Co to je, pro koho to je, kdy a na co se to používá. Základ, bez kterého nic dalšího nefunguje."],
+    [2, "Lidské signály", "Co říkají recenze a na co se ptají zákazníci. Sedí velikost? Vydrží to? Jak se to chová v praxi?"],
+    [3, "Značka a obchodní pravidla", "Kam dovážíte, jak vypadá vrácení, záruka, montáž, země původu, certifikace."],
+    [4, "Vizuální hygiena", "Má produkt použitelnou fotku? Na bílém pozadí, ostrou, bez vodoznaku a koláže?"]
+  ];
+
+  var srcBox = document.getElementById("sources");
+  SOURCES.forEach(function (name, i) {
+    var row = document.createElement("div");
+    row.className = "src-row";
+    row.innerHTML =
+      '<input type="checkbox" id="src-have-' + i + '" aria-label="Máme: ' + name + '">' +
+      '<div><span class="src-name">' + name + '</span>' +
+      '<input type="text" id="src-owner-' + i + '" placeholder="kdo to u nás vlastní"></div>';
+    srcBox.appendChild(row);
+  });
+
+  var layBox = document.getElementById("layers");
+  LAYERS.forEach(function (l) {
+    var d = document.createElement("div");
+    d.className = "layer l" + l[0];
+    d.innerHTML =
+      '<div class="layer-head"><span class="layer-n">' + l[0] + '</span><span class="layer-t">' + l[1] + '</span></div>' +
+      '<p class="layer-q">' + l[2] + '</p>' +
+      '<textarea id="layer-' + l[0] + '" placeholder="co o produktu víte a co v popisu není"></textarea>';
+    layBox.appendChild(d);
+  });
+
+  var KEY = "inventura-kontextu-v1";
+  var fields = function () {
+    return Array.prototype.slice.call(document.querySelectorAll("input, textarea"));
+  };
+
+  function save() {
+    try {
+      var data = {};
+      fields().forEach(function (el) {
+        data[el.id] = el.type === "checkbox" ? el.checked : el.value;
+      });
+      localStorage.setItem(KEY, JSON.stringify(data));
+    } catch (e) { /* soukromé okno, blokovaná data: nevadí */ }
+  }
+
+  function load() {
+    try {
+      var raw = localStorage.getItem(KEY);
+      if (!raw) return;
+      var data = JSON.parse(raw);
+      fields().forEach(function (el) {
+        if (!(el.id in data)) return;
+        if (el.type === "checkbox") el.checked = !!data[el.id];
+        else el.value = data[el.id];
+      });
+    } catch (e) { /* nevadí, jede se naprázdno */ }
+  }
+
+  document.addEventListener("input", save);
+  document.addEventListener("change", save);
+  load();
+
+  function asText() {
+    var out = ["INVENTURA KONTEXTU", ""];
+    out.push("A / KDE KONTEXT LEZI");
+    SOURCES.forEach(function (name, i) {
+      var have = document.getElementById("src-have-" + i).checked ? "mame" : "nemame";
+      var owner = document.getElementById("src-owner-" + i).value.trim();
+      out.push("- " + name + ": " + have + (owner ? ", vlastni: " + owner : ""));
+    });
+    out.push("");
+    out.push("B / JEDEN PRODUKT: " + (document.getElementById("produkt").value.trim() || "(nevyplneno)"));
+    LAYERS.forEach(function (l) {
+      var v = document.getElementById("layer-" + l[0]).value.trim();
+      out.push("");
+      out.push(l[0] + ". " + l[1]);
+      out.push(v || "(nevyplneno)");
+    });
+    out.push("");
+    out.push("C / CO NEMA NIKDO");
+    out.push(document.getElementById("unikat").value.trim() || "(nevyplneno)");
+    return out.join("\n");
+  }
+
+  var copyBtn = document.getElementById("copy");
+  copyBtn.addEventListener("click", function () {
+    var text = asText();
+    var done = function () {
+      copyBtn.textContent = "Zkopírováno";
+      copyBtn.classList.add("done");
+      setTimeout(function () {
+        copyBtn.textContent = "Zkopírovat vše";
+        copyBtn.classList.remove("done");
+      }, 1800);
+    };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(done, function () { fallbackCopy(text, done); });
+    } else {
+      fallbackCopy(text, done);
+    }
+  });
+
+  function fallbackCopy(text, done) {
+    try {
+      var ta = document.createElement("textarea");
+      ta.value = text;
+      ta.style.position = "fixed";
+      ta.style.opacity = "0";
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand("copy");
+      document.body.removeChild(ta);
+      done();
+    } catch (e) {
+      window.prompt("Zkopírujte text ručně:", text);
+    }
+  }
+
+  document.getElementById("clear").addEventListener("click", function () {
+    if (!window.confirm("Opravdu vymazat všechno, co jste vyplnili?")) return;
+    fields().forEach(function (el) {
+      if (el.type === "checkbox") el.checked = false; else el.value = "";
+    });
+    save();
+  });
+</script>
+</body>
+</html>
