@@ -1,0 +1,257 @@
+<!doctype html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Podívejte se na svou produktovou stránku tak, jak ji vidí AI crawler. Workshop Shopcamp 2026.">
+<meta name="robots" content="noindex">
+<title>Jak vás vidí AI</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=JetBrains+Mono:wght@400&family=Source+Sans+3:wght@400;600&display=swap">
+<style>
+  :root {
+    color-scheme: light dark;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+
+    --ground: #f6f6f3;
+    --surface: #ffffff;
+    --sunk: #eceee7;
+    --ink: #1b1f1a;
+    --ink-soft: #4c554a;
+    --ink-faint: #7b857a;
+    --rule: #d8ddd4;
+    --accent: #37702a;
+    --accent-bright: #7fd83d;
+    --accent-soft: #e9f4e0;
+    --on-accent: #ffffff;
+
+    --s--1: clamp(.82rem, .8rem + .1vw, .88rem);
+    --s-0: clamp(1.04rem, 1rem + .2vw, 1.14rem);
+    --s-1: clamp(1.2rem, 1.12rem + .35vw, 1.4rem);
+    --s-3: clamp(2rem, 1.6rem + 1.7vw, 3rem);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ground: #14170f; --surface: #1d2118; --sunk: #0e1109;
+      --ink: #e9ece4; --ink-soft: #b0b8a9; --ink-faint: #838c7d;
+      --rule: #333a2c; --accent: #9fd97f; --accent-soft: #1f2a16;
+      --on-accent: #14170f;
+    }
+  }
+  :root[data-theme="dark"] {
+    --ground: #14170f; --surface: #1d2118; --sunk: #0e1109;
+    --ink: #e9ece4; --ink-soft: #b0b8a9; --ink-faint: #838c7d;
+    --rule: #333a2c; --accent: #9fd97f; --accent-soft: #1f2a16;
+    --on-accent: #14170f;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--ground);
+    color: var(--ink);
+    font-family: "Source Sans 3", system-ui, -apple-system, sans-serif;
+    font-size: var(--s-0);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+  img { max-width: 100%; }
+  [hidden] { display: none !important; }
+
+  .wrap { max-width: 34rem; margin-inline: auto; padding-inline: 20px; padding-block: 2.5rem 3rem; }
+
+  h1 {
+    font-family: "Bricolage Grotesque", system-ui, sans-serif;
+    font-weight: 700; font-size: var(--s-3); line-height: 1;
+    letter-spacing: -.02em; margin: 0; text-wrap: balance;
+  }
+  .sub { font-size: var(--s-1); color: var(--ink-soft); margin: .9rem 0 0; text-wrap: pretty; }
+  p { margin: 0 0 1rem; text-wrap: pretty; }
+  p:last-child { margin-bottom: 0; }
+  strong { font-weight: 600; }
+
+  .tool {
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: 10px;
+    padding: 1.1rem;
+    margin-block: 1.75rem;
+  }
+  label {
+    display: block; font-weight: 600; font-size: var(--s--1);
+    margin-bottom: .4rem;
+  }
+  input[type="url"] {
+    font: inherit;
+    width: 100%;
+    padding: .65rem .75rem;
+    border: 1px solid var(--rule);
+    border-radius: 7px;
+    background: var(--ground);
+    color: var(--ink);
+  }
+  input[type="url"]:focus-visible, button:focus-visible, a:focus-visible {
+    outline: 2px solid var(--accent); outline-offset: 2px;
+  }
+
+  .result { margin-top: 1rem; }
+  .result-label {
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: .68rem; letter-spacing: .09em; text-transform: uppercase;
+    color: var(--ink-faint); margin-bottom: .35rem;
+  }
+  .out {
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: .8rem;
+    background: var(--sunk);
+    border-radius: 7px;
+    padding: .7rem .8rem;
+    word-break: break-all;
+    line-height: 1.5;
+    color: var(--ink);
+  }
+  .out.empty { color: var(--ink-faint); }
+
+  .actions { display: flex; gap: .5rem; margin-top: .7rem; flex-wrap: wrap; }
+  .btn {
+    font: inherit; font-size: var(--s--1); font-weight: 600;
+    border: 1px solid var(--accent);
+    border-radius: 7px;
+    padding: .5rem 1rem;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+  }
+  .btn.primary { background: var(--accent); color: var(--on-accent); }
+  .btn.ghost { background: transparent; color: var(--accent); }
+  .btn:hover { filter: brightness(1.08); }
+  .btn[aria-disabled="true"] { opacity: .45; pointer-events: none; }
+  .btn.done { background: var(--ink-faint); border-color: var(--ink-faint); color: var(--on-accent); }
+
+  .check {
+    background: var(--accent-soft);
+    border-left: 3px solid var(--accent);
+    border-radius: 0 8px 8px 0;
+    padding: .9rem 1rem;
+    margin-block: 1.75rem;
+  }
+  .check p { font-weight: 600; margin-bottom: .5rem; font-size: var(--s--1); }
+  .check ul { margin: 0; padding-left: 1.15rem; font-size: var(--s--1); }
+  .check li { margin-bottom: .3rem; }
+  .check li:last-child { margin-bottom: 0; }
+
+  .fallback { border-top: 1px solid var(--rule); padding-top: 1.5rem; margin-top: 2rem; font-size: var(--s--1); color: var(--ink-soft); }
+  .fallback h2 { font-family: "Bricolage Grotesque", system-ui, sans-serif; font-size: var(--s-1); margin: 0 0 .5rem; }
+  .fallback a { color: var(--accent); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <h1>Jak vás vidí AI</h1>
+  <p class="sub">Vložte adresu jedné své produktové stránky. Dostanete ji v podobě, ve které ji čte AI crawler: holý text, žádný design.</p>
+
+  <div class="tool">
+    <label for="url">Adresa vaší produktové stránky</label>
+    <input type="url" id="url" inputmode="url" autocomplete="off" spellcheck="false"
+           placeholder="vasobchod.cz/produkt/neco">
+
+    <div class="result">
+      <div class="result-label">Odkaz k otevření</div>
+      <div class="out empty" id="out">Zatím nic. Vložte adresu nahoře.</div>
+      <div class="actions">
+        <a class="btn primary" id="open" href="#" target="_blank" rel="noopener" aria-disabled="true">Otevřít</a>
+        <button class="btn ghost" id="copy" type="button" aria-disabled="true">Zkopírovat odkaz</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="check">
+    <p>Co v tom výstupu hledat</p>
+    <ul>
+      <li>Je tam <strong>cena</strong>?</li>
+      <li>Je tam <strong>dostupnost</strong>?</li>
+      <li>Je tam <strong>popis produktu</strong>, nebo jen menu a patička?</li>
+      <li>Jsou tam <strong>parametry</strong>?</li>
+    </ul>
+  </div>
+
+  <p>Zopakujte to na jedné stránce od každé šablony, kterou máte: jednoduchý produkt, produkt s variantami a produkt ve slevě. Chovají se různě častěji, než by člověk čekal.</p>
+
+  <p><strong>Když v tom výstupu není cena, AI cenu nevidí.</strong> A produkt bez ceny se nedoporučuje.</p>
+
+  <div class="fallback">
+    <h2>Když to nefunguje</h2>
+    <p>Některé e-shopy si nechávají takové čtení zakázané. Pak si v prohlížeči otevřete <strong>Zobrazit zdroj stránky</strong>, ne Prozkoumat prvek. Zdroj ukazuje, co poslal server, tedy přesně to, co dostane crawler. Prozkoumat prvek ukazuje stav po doběhnutí JavaScriptu, který crawler nedostane.</p>
+    <p><a href="../">Zpět na návod z workshopu</a></p>
+  </div>
+
+</div>
+
+<script>
+  var input = document.getElementById("url");
+  var out = document.getElementById("out");
+  var open_ = document.getElementById("open");
+  var copy = document.getElementById("copy");
+  var current = "";
+
+  function build() {
+    var raw = input.value.trim();
+    if (!raw) {
+      current = "";
+      out.textContent = "Zatím nic. Vložte adresu nahoře.";
+      out.classList.add("empty");
+      open_.setAttribute("aria-disabled", "true");
+      copy.setAttribute("aria-disabled", "true");
+      open_.href = "#";
+      return;
+    }
+    if (!/^https?:\/\//i.test(raw)) raw = "https://" + raw;
+    current = "https://r.jina.ai/" + raw;
+    out.textContent = current;
+    out.classList.remove("empty");
+    open_.href = current;
+    open_.removeAttribute("aria-disabled");
+    copy.removeAttribute("aria-disabled");
+  }
+
+  input.addEventListener("input", build);
+  input.addEventListener("change", build);
+
+  copy.addEventListener("click", function () {
+    if (!current) return;
+    var done = function () {
+      copy.textContent = "Zkopírováno";
+      copy.classList.add("done");
+      setTimeout(function () {
+        copy.textContent = "Zkopírovat odkaz";
+        copy.classList.remove("done");
+      }, 1800);
+    };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(current).then(done, function () { fallbackCopy(done); });
+    } else {
+      fallbackCopy(done);
+    }
+  });
+
+  function fallbackCopy(done) {
+    try {
+      var ta = document.createElement("textarea");
+      ta.value = current;
+      ta.style.position = "fixed";
+      ta.style.opacity = "0";
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand("copy");
+      document.body.removeChild(ta);
+      done();
+    } catch (e) {
+      window.prompt("Zkopírujte odkaz ručně:", current);
+    }
+  }
+
+  build();
+</script>
+</body>
+</html>
