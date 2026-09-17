@@ -1,0 +1,648 @@
+<!doctype html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Jak z recenzí a článků udělat konverzační atributy produktového feedu. Technický postup.">
+<meta name="robots" content="noindex">
+<style>
+  :root { color-scheme: light dark; padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); }
+  body { margin: 0; }
+  img { max-width: 100%; }
+  [hidden] { display: none !important; }
+  .backlink { display: inline-block; margin-block: 1.5rem 0; font-size: .85rem; }
+</style>
+<title>Kontext do feedu</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Serif:ital,wght@0,400;1,400&display=swap">
+<style>
+  :root {
+    --ground: #eef1f4;
+    --surface: #ffffff;
+    --surface-sunk: #e3e8ed;
+    --ink: #151e27;
+    --ink-soft: #4a5a6a;
+    --ink-faint: #74858f;
+    --rule: #cfd8e0;
+    --rule-soft: #dfe5ea;
+    --accent: #1f3fb5;
+    --accent-soft: #e7ebfa;
+    --warn: #96560a;
+    --warn-soft: #f8eddc;
+    --ok: #1a6b47;
+    --ok-soft: #e0efe7;
+    --shadow: 0 1px 2px rgba(21, 30, 39, .06);
+
+    --step--1: clamp(.78rem, .76rem + .1vw, .84rem);
+    --step-0: clamp(1rem, .97rem + .16vw, 1.08rem);
+    --step-1: clamp(1.18rem, 1.1rem + .35vw, 1.4rem);
+    --step-2: clamp(1.45rem, 1.3rem + .7vw, 1.95rem);
+    --step-3: clamp(1.85rem, 1.55rem + 1.3vw, 2.8rem);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ground: #101820;
+      --surface: #18222c;
+      --surface-sunk: #0b1219;
+      --ink: #e7edf2;
+      --ink-soft: #a9bac7;
+      --ink-faint: #7d8f9c;
+      --rule: #2b3946;
+      --rule-soft: #22303c;
+      --accent: #9db2ff;
+      --accent-soft: #1b2748;
+      --warn: #e5ac62;
+      --warn-soft: #33260f;
+      --ok: #73c8a0;
+      --ok-soft: #122c21;
+      --shadow: 0 1px 2px rgba(0, 0, 0, .3);
+    }
+  }
+  :root[data-theme="dark"] {
+    --ground: #101820;
+    --surface: #18222c;
+    --surface-sunk: #0b1219;
+    --ink: #e7edf2;
+    --ink-soft: #a9bac7;
+    --ink-faint: #7d8f9c;
+    --rule: #2b3946;
+    --rule-soft: #22303c;
+    --accent: #9db2ff;
+    --accent-soft: #1b2748;
+    --warn: #e5ac62;
+    --warn-soft: #33260f;
+    --ok: #73c8a0;
+    --ok-soft: #122c21;
+    --shadow: 0 1px 2px rgba(0, 0, 0, .3);
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    background: var(--ground);
+    color: var(--ink);
+    font-family: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+    font-size: var(--step-0);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap {
+    max-width: 44rem;
+    margin-inline: auto;
+    padding-inline: 20px;
+    padding-block: 0 4rem;
+  }
+
+  header.mast {
+    padding-block: 3rem 2rem;
+    border-bottom: 2px solid var(--ink);
+  }
+  .eyebrow {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: var(--step--1);
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin: 0 0 1rem;
+  }
+  h1 {
+    font-size: var(--step-3);
+    font-weight: 700;
+    line-height: 1.05;
+    letter-spacing: -.02em;
+    margin: 0;
+    text-wrap: balance;
+  }
+  .lede {
+    font-family: "IBM Plex Serif", Georgia, serif;
+    font-size: var(--step-1);
+    line-height: 1.5;
+    color: var(--ink-soft);
+    margin: 1.25rem 0 0;
+    max-width: 34rem;
+    text-wrap: pretty;
+  }
+
+  section { padding-block: 2.5rem; border-bottom: 1px solid var(--rule-soft); }
+  section:last-of-type { border-bottom: 0; }
+
+  h2 {
+    font-size: var(--step-2);
+    font-weight: 600;
+    line-height: 1.15;
+    letter-spacing: -.015em;
+    margin: 0 0 1rem;
+    text-wrap: balance;
+  }
+  h3 {
+    font-size: var(--step-1);
+    font-weight: 600;
+    line-height: 1.25;
+    margin: 2rem 0 .6rem;
+    text-wrap: balance;
+  }
+  h4 {
+    font-size: var(--step-0);
+    font-weight: 600;
+    margin: 1.5rem 0 .4rem;
+  }
+  p { margin: 0 0 1rem; max-width: 36rem; text-wrap: pretty; }
+  p:last-child { margin-bottom: 0; }
+  strong { font-weight: 600; }
+  a { color: var(--accent); text-underline-offset: .18em; }
+  a:focus-visible, summary:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  code, .mono {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: .88em;
+  }
+  code.path {
+    background: var(--surface-sunk);
+    padding: .12em .38em;
+    border-radius: 3px;
+    word-break: break-word;
+  }
+
+  ul, ol { margin: 0 0 1rem; padding-left: 1.2rem; max-width: 36rem; }
+  li { margin-bottom: .5rem; }
+  li:last-child { margin-bottom: 0; }
+
+  /* ---- tok zdroju ---- */
+  .flow { display: grid; gap: .55rem; margin-block: 1.5rem 2rem; }
+  .flow-branches { display: grid; grid-template-columns: 1fr 1fr; gap: .55rem; }
+  @media (max-width: 30rem) { .flow-branches { grid-template-columns: 1fr; } }
+  .node {
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    padding: .7rem .85rem;
+    box-shadow: var(--shadow);
+  }
+  .node .n-label {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: .7rem;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    display: block;
+    margin-bottom: .15rem;
+  }
+  .node .n-body { font-size: var(--step--1); line-height: 1.45; color: var(--ink-soft); }
+  .node.branch { border-left: 3px solid var(--accent); }
+  .node.join { border-left: 3px solid var(--ok); }
+  .node.out { background: var(--accent-soft); border-color: var(--accent); }
+  .flow-arrow {
+    text-align: center;
+    color: var(--ink-faint);
+    font-size: .8rem;
+    line-height: 1;
+  }
+
+  /* ---- vrstvy ---- */
+  .layers { display: grid; gap: 0; margin-block: 1.5rem; }
+  .layer {
+    display: grid;
+    grid-template-columns: 2.1rem 1fr;
+    gap: .9rem;
+    padding-block: .9rem;
+    border-top: 1px solid var(--rule-soft);
+    align-items: start;
+  }
+  .layer:last-child { border-bottom: 1px solid var(--rule-soft); }
+  .layer-no {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: var(--step--1);
+    color: var(--accent);
+    font-weight: 500;
+    padding-top: .15rem;
+  }
+  .layer-name { font-weight: 600; }
+  .layer-scope {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: .68rem;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-left: .5rem;
+    white-space: nowrap;
+  }
+  .layer-desc { color: var(--ink-soft); font-size: var(--step--1); line-height: 1.5; margin-top: .15rem; }
+
+  /* ---- tabulky ---- */
+  .scroll { overflow-x: auto; margin-block: 1.25rem; border: 1px solid var(--rule); border-radius: 4px; background: var(--surface); }
+  table { border-collapse: collapse; width: 100%; font-size: var(--step--1); }
+  th, td { text-align: left; padding: .6rem .75rem; border-bottom: 1px solid var(--rule-soft); vertical-align: top; }
+  th {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: .7rem;
+    letter-spacing: .07em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    font-weight: 500;
+    white-space: nowrap;
+  }
+  tr:last-child td { border-bottom: 0; }
+  td.num { font-variant-numeric: tabular-nums; white-space: nowrap; }
+  td.mono-cell { font-family: "IBM Plex Mono", ui-monospace, monospace; font-size: .8rem; }
+
+  /* ---- bloky s poznamkou ---- */
+  .note {
+    border-left: 3px solid var(--warn);
+    background: var(--warn-soft);
+    padding: .9rem 1rem;
+    margin-block: 1.25rem;
+    border-radius: 0 4px 4px 0;
+  }
+  .note > :first-child { margin-top: 0; }
+  .note > :last-child { margin-bottom: 0; }
+  .note .note-label {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: .68rem;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--warn);
+    display: block;
+    margin-bottom: .3rem;
+    font-weight: 500;
+  }
+  .note.verified { border-left-color: var(--ok); background: var(--ok-soft); }
+  .note.verified .note-label { color: var(--ok); }
+
+  pre {
+    background: var(--surface-sunk);
+    border: 1px solid var(--rule-soft);
+    border-radius: 4px;
+    padding: .8rem .9rem;
+    overflow-x: auto;
+    margin-block: 1rem;
+    font-size: .82rem;
+    line-height: 1.5;
+  }
+  pre code { font-size: inherit; }
+
+  .schema { display: grid; gap: 0; margin-block: 1.25rem; }
+  .field {
+    display: grid;
+    grid-template-columns: 9.5rem 1fr;
+    gap: .75rem;
+    padding-block: .55rem;
+    border-top: 1px solid var(--rule-soft);
+    font-size: var(--step--1);
+  }
+  .field:last-child { border-bottom: 1px solid var(--rule-soft); }
+  @media (max-width: 30rem) { .field { grid-template-columns: 1fr; gap: .1rem; } }
+  .field dt {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    color: var(--accent);
+    font-weight: 500;
+  }
+  .field dd { margin: 0; color: var(--ink-soft); line-height: 1.45; }
+
+  .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(7.5rem, 1fr)); gap: 1px; background: var(--rule); border: 1px solid var(--rule); border-radius: 4px; overflow: hidden; margin-block: 1.5rem; }
+  .stat { background: var(--surface); padding: .85rem .9rem; }
+  .stat .s-num {
+    font-size: var(--step-1);
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -.02em;
+    display: block;
+    line-height: 1.1;
+  }
+  .stat .s-lab { font-size: .72rem; color: var(--ink-faint); line-height: 1.35; display: block; margin-top: .25rem; }
+
+  details {
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    background: var(--surface);
+    padding: .75rem .9rem;
+    margin-block: 1rem;
+  }
+  summary { cursor: pointer; font-weight: 600; font-size: var(--step--1); }
+  details[open] summary { margin-bottom: .6rem; }
+  details p, details ul { font-size: var(--step--1); color: var(--ink-soft); }
+
+  footer.end {
+    padding-block: 2.5rem 0;
+    border-top: 2px solid var(--ink);
+    margin-top: 2rem;
+    color: var(--ink-soft);
+    font-size: var(--step--1);
+  }
+  .kicker {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: .7rem;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin: 0 0 .5rem;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="mast">
+  <p class="eyebrow">Shopcamp 2026 · praktická část</p>
+  <h1>Kontext do feedu</h1>
+  <p class="lede">Váš e-shop už ví, proč si lidé produkt kupují. Ta znalost leží v recenzích, v článcích a v hlavách lidí na podpoře, a do feedu se z ní nedostane nic. Tohle je postup, jak ji tam dostat, aniž byste si v půlce cesty začali odporovat.</p>
+</header>
+
+<section>
+  <h2>Problém není sběr dat, ale granularita</h2>
+  <p>Recenze má granularitu „jeden člověk, jeden nákup, jeden dojem“. Článek na blogu má granularitu „tenhle typ materiálu se chová takhle“. Feedový atribut potřebuje granularitu „co platí o tomhle produktu“.</p>
+  <p>Dokud mezi zdrojem a feedem není vrstva, která tyhle tři věci srovná, každý pokus skončí jedním ze dvou způsobů: <strong>citací</strong>, nebo <strong>výmyslem</strong>. Citace vypadá takhle:</p>
+  <pre><code>Q: Co na produkt říkají zákazníci, kteří si ho koupili?
+A: Hodnocení 5/5. Na vybarvování modelů výborné.</code></pre>
+  <p>Je to formálně správně vyplněné pole a je k ničemu. Nikdo se takhle neptá. Zákazník se ptá, jestli se tímhle fixem dá vybarvovat model, a odpověď má být odpověď, ne referát o tom, že to někdo napsal.</p>
+  <p>Druhá varianta problému je zákeřnější. Když zdroje zpracováváte zvlášť, vzniknou dvě sady pravidel, které se ve feedu perou o stejná místa. Otázka z recenzí i otázka z článku míří na první pozici, a kdo běží později, přepíše toho druhého. Nikdo vám to nenahlásí, protože formálně obojí proběhlo.</p>
+</section>
+
+<section>
+  <h2>Tvar řešení</h2>
+  <p>Každý zdroj se zpracovává zvlášť tak dlouho, dokud z něj nevypadnou tvrzení. Pak se všechno slije do jedné tabulky, a teprve ta jde do feedu.</p>
+
+  <div class="flow">
+    <div class="flow-branches">
+      <div class="node branch">
+        <span class="n-label">Zdroj A</span>
+        <span class="n-body">Recenze. Vážou se na konkrétní produkt, nesou čísla i text.</span>
+      </div>
+      <div class="node branch">
+        <span class="n-label">Zdroj B</span>
+        <span class="n-body">Články a slovník. Váží se na typ produktu, nesou odbornost.</span>
+      </div>
+    </div>
+    <div class="flow-arrow" aria-hidden="true">↓ ↓</div>
+    <div class="node join">
+      <span class="n-label">Slití</span>
+      <span class="n-body">Jedna tabulka, jeden řádek na produkt. Tady se rozhodne, který zdroj má u kterého produktu přednost.</span>
+    </div>
+    <div class="flow-arrow" aria-hidden="true">↓</div>
+    <div class="node out">
+      <span class="n-label">Zápis</span>
+      <span class="n-body">Jeden import do feedu. Přidání dalšího zdroje nebo další otázky už nikdy nepřidá další pravidlo.</span>
+    </div>
+  </div>
+
+  <p>Ta tabulka je celý vtip. Je to místo, kde se spor mezi zdroji rozhodne <strong>jednou a nad daty</strong>, místo aby se rozhodoval pokaždé znovu a potichu ve feedu podle toho, které pravidlo běželo později.</p>
+</section>
+
+<section>
+  <h2>Šest vrstev</h2>
+  <p>Vrstvy 1 až 5 běží pro každý zdroj zvlášť. Od šestky je to společné.</p>
+
+  <div class="layers">
+    <div class="layer">
+      <div class="layer-no">01</div>
+      <div>
+        <span class="layer-name">Sběr</span><span class="layer-scope">per zdroj</span>
+        <div class="layer-desc">Stáhnout, co zdroj dává, v jeho vlastním formátu. Nic se tu neinterpretuje. Uložit si i to, co zdroj tvrdil konkrétní den.</div>
+      </div>
+    </div>
+    <div class="layer">
+      <div class="layer-no">02</div>
+      <div>
+        <span class="layer-name">Normalizace</span><span class="layer-scope">per zdroj</span>
+        <div class="layer-desc">Převést každý záznam na jednotný tvar. Tady se rozhoduje úspěch celého řetězce, protože se přiděluje klíč, kterým se záznam pozná k produktu.</div>
+      </div>
+    </div>
+    <div class="layer">
+      <div class="layer-no">03</div>
+      <div>
+        <span class="layer-name">Agregace</span><span class="layer-scope">per zdroj</span>
+        <div class="layer-desc">Z N záznamů jeden profil: počty, průměr, rozložení hodnocení a přerovnané výroky. Žádný generovaný text.</div>
+      </div>
+    </div>
+    <div class="layer">
+      <div class="layer-no">04</div>
+      <div>
+        <span class="layer-name">Extrakce tvrzení</span><span class="layer-scope">per zdroj</span>
+        <div class="layer-desc">Teprve tady vstupuje jazykový model a dělá jedinou věc: z profilu vytáhne, k čemu produkt lidé používají a co na něm řeší. Výstupem nejsou věty do feedu, ale fakta.</div>
+      </div>
+    </div>
+    <div class="layer">
+      <div class="layer-no">05</div>
+      <div>
+        <span class="layer-name">Generování atributů</span><span class="layer-scope">per zdroj</span>
+        <div class="layer-desc">Z faktů se skládá text pro konkrétní pole. Otázka je situace zákazníka, odpověď je fakt s podmínkou a vymezením.</div>
+      </div>
+    </div>
+    <div class="layer">
+      <div class="layer-no">06</div>
+      <div>
+        <span class="layer-name">Slití a zápis</span><span class="layer-scope">společné</span>
+        <div class="layer-desc">Všechny zdroje na jeden řádek na produkt, přidělení pozic, kontrola limitů kanálu, export tabulky.</div>
+      </div>
+    </div>
+  </div>
+
+  <p>Rozdělení není samoúčelné. Drží dvě pravidla, která rozhodují o tom, jestli se výsledku dá věřit: <strong>čísla se nikdy negenerují, jen přenášejí</strong>, a <strong>každé tvrzení musí být dohledatelné ke zdroji</strong>. Model dostane do ruky jen text, čísla dopočítá skript z profilu, a u každého faktu zůstane, ze které recenze nebo ze kterého článku pochází.</p>
+</section>
+
+<section>
+  <h2>Schéma tvrzení</h2>
+  <p>Tohle je ta nástrojově nezávislá část, kterou si odnesete, i kdybyste zbytek zahodili. Sedm polí, stejných pro recenzi i pro článek.</p>
+
+  <dl class="schema">
+    <div class="field"><dt>entita</dt><dd>čeho se to týká: materiál, značka, kategorie, konkrétní produkt</dd></div>
+    <div class="field"><dt>vlastnost</dt><dd>co o ní platí</dd></div>
+    <div class="field"><dt>důsledek</dt><dd>co z toho plyne pro zákazníka, ne pro technologa</dd></div>
+    <div class="field"><dt>podmínka</dt><dd>kdy to platí</dd></div>
+    <div class="field"><dt>vymezení</dt><dd>kdy to naopak neplatí, nebo co si s tím lidé pletou</dd></div>
+    <div class="field"><dt>jazyk zákazníka</dt><dd>jak se o tom mluví, včetně nespisovných výrazů</dd></div>
+    <div class="field"><dt>zdroj</dt><dd>odkud to je, s datem</dd></div>
+  </dl>
+
+  <p>Dvě pole z těch sedmi vypadají zbytečně a jsou nejcennější. <strong>Vymezení</strong> je to, co feed od výrobce nikdy neřekne, a přitom je to nejčastější důvod vrácení zboží. <strong>Jazyk zákazníka</strong> je to, čím se pak formuluje otázka, aby seděla na to, jak se lidé ptají.</p>
+
+  <p>Ukázka jednoho hotového tvrzení z reálného běhu:</p>
+  <pre><code>entita      filamenty s uhlíkovými vlákny
+vlastnost   vlákna tvoří 10 až 30 % hmotnosti struny
+důsledek    obrušují mosaznou trysku zevnitř i zvenku
+podmínka    u všech tiskáren s mosaznou tryskou
+vymezení    u PLA s příměsí je vlákno kosmetické, ne nosné
+jazyk       „ucpaná tryska“, „nevytéká“, „vydřená tryska“
+zdroj       blog, článek o abrazivních materiálech, 2026-09</code></pre>
+
+  <p>Z toho se pak dá postavit otázka, na kterou se zákazník opravdu ptá, a odpověď, která mu poradí, místo aby mu referovala o cizí recenzi.</p>
+</section>
+
+<section>
+  <h2>Větev A: kontext z recenzí</h2>
+  <p>Recenze jsou nejbližší zdroj, protože jsou už navázané na produkt a nesou i čísla. Mají ale tři pasti, které stojí za to znát dopředu.</p>
+
+  <h4>Jedna recenze visí u víc produktů</h4>
+  <p>Hodnotící portály tutéž recenzi vystavují u několika variant téhož zboží. Když budete deduplikovat podle identity recenze, o ta přiřazení přijdete. <strong>Identitou záznamu musí být dvojice recenze a produkt</strong>, ne recenze sama. Na reálných datech to byl rozdíl 34 oproti 31 záznamům, tedy tři tiše ztracené produkty.</p>
+
+  <h4>Průměr o produktu neřekne nic, rozložení ano</h4>
+  <p>Nejrecenzovanější produkt v testovaném katalogu měl dvě hodnocení, pětku a jedničku. Průměr 3,0 je číslo, které neodpovídá ničemu. Filtr „čtyři a výš“ by ten produkt vyhodil celý, přestože jedna z těch recenzí má použitelný text.</p>
+
+  <h4>Záznam bez klíče se nesmí zahodit potichu</h4>
+  <p>Část recenzí nemá EAN. Když se spolehnete jen na něj, produkty bez něj beze stopy zmizí. Fallback na URL produktu jich v testu zachránil osm. Záznam bez jakéhokoli klíče se má uložit a označit, ne vyhodit.</p>
+
+  <div class="note verified">
+    <span class="note-label">Co z recenzí reálně vypadlo</span>
+    <p>34 recenzí, z toho 31 unikátních, 33 profilů produktů, 52 faktů a 23 párů otázka a odpověď. Ani jeden záznam bez klíče. Průměrné hodnocení 4,38.</p>
+  </div>
+</section>
+
+<section>
+  <h2>Větev B: kontext z článků</h2>
+  <p>Blog, materiálový slovník, návody, znalostní báze podpory. Tohle je zdroj, který má e-shop obvykle nejlepší a nejméně ho používá.</p>
+
+  <h4>Kontrolní otázka na začátku</h4>
+  <p>Ne každý článek je materiál pro feed. Pusťte na každý jednu otázku: <strong>pomůže tohle zákazníkovi rozhodnout se mezi dvěma produkty?</strong> Firemní novinky, legislativa, pozvánky na akce a texty o tom, jak se co naceňuje, neprojdou. V testovaném běhu z 3508 adres v sitemapě zbylo 67 článků a z nich 52 nosných.</p>
+
+  <h4>Tvrzení z článku neplatí pro produkt, ale pro segment</h4>
+  <p>Tohle je hlavní rozdíl proti recenzím a určuje celý zbytek postupu. Článek o abrazivních materiálech neplatí pro jeden filament, ale pro všechny s uhlíkovými vlákny. Takže ke každému tvrzení potřebujete <strong>selektor</strong>, tedy pravidlo, které z katalogu vybere produkty, jichž se týká.</p>
+
+  <div class="note">
+    <span class="note-label">Past, která vás potká hned</span>
+    <p>Výběr podle slova v názvu vyrábí falešné zásahy a nikdo vám to neřekne. Slovo <em>metal</em> v testovaném katalogu matchlo 29 filamentů, ale jen 6 z nich mělo kovové plnivo. Zbytek byla metalická <em>barva</em>. Totéž u „wood“, kde „Wood Brown“ je odstín, ne dřevo.</p>
+    <p>Kategorie je spolehlivější signál než název. A ať použijete cokoli, vypište si zásahy a přečtěte si je. Výběr produktů zabral v testu čtyři iterace a každá neúspěšná byla poučnější než ta poslední.</p>
+  </div>
+
+  <div class="note verified">
+    <span class="note-label">Co z článků reálně vypadlo</span>
+    <p>95 tvrzení ve 23 tématech. Šest z nich už je přepsaných do atributů a pokrývá 140 produktů z 3164. U devíti tvrzení chybí vymezení, protože v článku žádné nebylo, a nedopisovalo se.</p>
+  </div>
+
+  <h4>Dva nálezy, které stojí za zmínku</h4>
+  <p>Články si místy odporují. Tepelná odolnost téhož materiálu byla v jednom článku „přes 120 °C“ a v druhém „až do 180 °C“. Nechte v tvrzení obě hodnoty se zdroji; rozhodnutí patří někomu, kdo materiál zná.</p>
+  <p>A kontext teče i opačným směrem, než čekáte. Popis produktu od výrobce obsahoval doporučení k průměru trysky, které nebylo v žádném článku. Feed a obsah se doplňují oboustranně.</p>
+</section>
+
+<section>
+  <h2>Tabulka</h2>
+  <p>Od tohohle místa je jedno, odkud tvrzení přišlo. Jeden řádek je jeden produkt.</p>
+
+  <h4>Jeden klíč, ne dva</h4>
+  <p>Recenze se přirozeně párují přes EAN a tam, kde chybí, přes URL. Tabulka ale snese jen jeden klíčový sloupec. Použijte <strong>interní ID produktu</strong>, protože to má ve feedu každý produkt. V testovaném katalogu nemá EAN 482 produktů z 3164, což je patnáct procent, které by se jinak nedaly oslovit.</p>
+
+  <h4>Pořadí zdrojů je rozhodnutí, ne detail</h4>
+  <p>Když má produkt tvrzení z recenze i z článku, něco musí být první. Doporučení: <strong>recenze berou dřívější pozice</strong>, protože kupující mluví o tomhle konkrétním produktu, zatímco článek o celé jeho kategorii. Podstatné je, že se to rozhodne jednou a je to napsané, ne že to pokaždé vyjde podle toho, které pravidlo běželo později.</p>
+
+  <h4>Dvě tabulky, ne jedna</h4>
+  <p>Vyplatí se držet je oddělené, protože každá má jiného adresáta.</p>
+  <div class="scroll">
+    <table>
+      <thead><tr><th>Tabulka</th><th>Pro koho</th><th>Co je v ní navíc</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Pracovní</strong></td><td>pro člověka</td><td>u každého tvrzení zdroj a doklad, hodnocení, doplněk popisu, sloupec s výsledkem kontroly</td></tr>
+        <tr><td><strong>Importní</strong></td><td>pro nástroj</td><td>nic. Výhradně sloupce, jejichž název je cesta k poli ve feedu</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>Ta hranice má praktický důvod. Importy obvykle zakládají nové pole pro každý neznámý sloupec, takže pomocný sloupec typu „zdroj“ vám ve feedu vyrobí pole, které nikam nevede a nikdo si ho nevšimne. Dohledatelnost proto zůstává v pracovní tabulce.</p>
+</section>
+
+<section>
+  <h2>Zápis do feedu</h2>
+  <p>Konverzační atributy jsou opakovaná pole: produkt může mít víc otázek a víc highlightů. To je místo, kde většina postupů zbytečně zesložití.</p>
+
+  <h4>Pozice patří do názvu sloupce</h4>
+  <p>Hlavička sloupce je celá cesta k poli včetně pozice. V zápisu, který používá Mergado, to vypadá takhle:</p>
+  <pre><code>g:question_and_answer { @@POSITION = 1 } | g:question
+g:question_and_answer { @@POSITION = 1 } | g:answer
+g:question_and_answer { @@POSITION = 2 } | g:question
+g:question_and_answer { @@POSITION = 2 } | g:answer
+g:product_highlight   { @@POSITION = 1 }
+g:product_highlight   { @@POSITION = 2 }</code></pre>
+
+  <div class="note verified">
+    <span class="note-label">Ověřeno 16. 9. 2026 na katalogu s 3164 produkty</span>
+    <p>Import takovou hlavičku přijme a blok na pozici 2 založí <strong>i tehdy, když pozice 1 ještě neexistuje</strong>. Všech šest hodnot přistálo na správných místech, jedním průchodem, za 0,087 vteřiny.</p>
+    <p>Přidání třetí otázky je pak dvojice nových sloupců a žádné nové pravidlo. Odtud ta věta z úvodu, že další zdroj už nikdy nepřidá další pravidlo.</p>
+  </div>
+
+  <h4>Pozice patří na obal, ne na jeho obsah</h4>
+  <p>Opakovaný je celý blok s otázkou a odpovědí, ne otázka uvnitř něj. Každý blok nese právě jednu otázku a jednu odpověď. Zápis, který dá pozici na otázku místo na blok, vyplní jen ten první a zbytek tiše zahodí.</p>
+  <pre><code>&lt;g:question_and_answer&gt;
+  &lt;g:question&gt;Potřebuji tvrzenou trysku?&lt;/g:question&gt;
+  &lt;g:answer&gt;Ano, vlákna obrušují mosaz.&lt;/g:answer&gt;
+&lt;/g:question_and_answer&gt;
+&lt;g:question_and_answer&gt;
+  &lt;g:question&gt;Zvládne velké výtisky?&lt;/g:question&gt;
+  &lt;g:answer&gt;Ano, nekroutí se.&lt;/g:answer&gt;
+&lt;/g:question_and_answer&gt;</code></pre>
+
+  <div class="note">
+    <span class="note-label">Tři věci, na které si dát pozor</span>
+    <p><strong>Překlep v hlavičce neskončí chybou.</strong> Většina importů neznámý sloupec prostě založí jako nové pole, takže si vyrobíte pole, které se nikam nepropíše a nikdo si toho nevšimne. Po prvním importu porovnejte seznam polí ve feedu proti hlavičkám tabulky.</p>
+    <p><strong>Nahraný soubor je snímek, ne zdroj.</strong> Pokud chcete, aby se změna v tabulce propsala sama, musí tabulka ležet na adrese, kterou si nástroj sám stahuje. Publikovaný list z tabulkového procesoru na to stačí.</p>
+    <p><strong>Doplnění popisu do tabulky nepatří.</strong> Import zapisuje celou hodnotu, takže by původní popis přepsal. Připojení věty na konec stávajícího textu je jiná operace a řeší se jinak.</p>
+  </div>
+</section>
+
+<section>
+  <h2>Kontrola na kanál</h2>
+  <p>Limity si každý kanál drží jiné a uplatňují se až na konci, protože tatáž věta jde do dvou kanálů jinak. Dvě, které vás potkají hned:</p>
+  <div class="scroll">
+    <table>
+      <thead><tr><th>Pole</th><th>Limit</th><th>Co se stane při porušení</th></tr></thead>
+      <tbody>
+        <tr><td class="mono-cell">product_highlight</td><td>1 až 150 znaků, <strong>minimálně 2 na produkt</strong></td><td>s jedinou hodnotou je celý atribut neplatný</td></tr>
+        <tr><td class="mono-cell">question / answer</td><td>1000 znaků každé, 10 000 na produkt, max 30 párů</td><td>přebytek se ořízne nebo odmítne</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="note">
+    <span class="note-label">Tohle je největší rezerva, kterou data mají</span>
+    <p>Na reálném běhu mělo <strong>102 produktů jediný highlight</strong>, a Google jich vyžaduje minimálně dva. Všech 102 vypadlo, prošly čtyři. Není to chyba dat ani nástroje: segment prostě dodá jednu větu. Dopsat ke každému segmentu druhou znamená okamžitě 98 produktů navíc.</p>
+    <p>Neplatná hodnota nemá jít do importu, ale nemá ani zmizet. Nechte ji v pracovní tabulce s poznámkou, ať je vidět, co dopsat.</p>
+  </div>
+</section>
+
+<section>
+  <h2>Co z toho vyšlo</h2>
+  <p>Čísla z jednoho běhu na reálném e-shopu s 3164 produkty, dvěma zdroji a jedním odpolednem práce.</p>
+  <div class="stats">
+    <div class="stat"><span class="s-num">3 508</span><span class="s-lab">adres v sitemapě</span></div>
+    <div class="stat"><span class="s-num">67</span><span class="s-lab">článků, z toho 52 nosných</span></div>
+    <div class="stat"><span class="s-num">95</span><span class="s-lab">tvrzení z článků</span></div>
+    <div class="stat"><span class="s-num">34</span><span class="s-lab">recenzí, 31 unikátních</span></div>
+    <div class="stat"><span class="s-num">162</span><span class="s-lab">produktů s kontextem</span></div>
+    <div class="stat"><span class="s-num">163</span><span class="s-lab">párů otázka a odpověď</span></div>
+  </div>
+  <p>162 produktů z 3164 je pět procent katalogu. Není to moc a je to poctivé číslo: tolik jich má doložený kontext ze dvou zdrojů. Zbytek katalogu čeká na další zdroje, a přidat je už neznamená přestavovat feed, jen doplnit řádky do tabulky.</p>
+  <p>Stojí za to všimnout si ještě jednoho čísla. Překryv obou zdrojů byl <strong>nulový</strong>: ani jeden produkt neměl zároveň recenzi i článkové tvrzení. Přesto oba postupy mířily na stejnou první pozici. Kolize se tedy nijak neprojevila a čekala, až přibude první recenze u produktu, o kterém píšete na blogu.</p>
+</section>
+
+<section>
+  <h2>Čím to udělat</h2>
+  <p>Postup nahoře je záměrně popsaný bez nástrojů, protože každá vrstva má víc možných implementací a vy nejspíš půlku z nich už máte.</p>
+  <div class="scroll">
+    <table>
+      <thead><tr><th>Vrstva</th><th>Co musí umět</th><th>Čím to jde udělat</th></tr></thead>
+      <tbody>
+        <tr><td>Sběr</td><td>stáhnout a uložit</td><td>export z hodnotícího portálu, sitemapa, jakýkoli skript, ruční stažení</td></tr>
+        <tr><td>Normalizace<br>a agregace</td><td>sjednotit tvar, spočítat</td><td>tabulkový procesor zvládne obojí, dokud jste v řádu tisíců řádků</td></tr>
+        <tr><td>Extrakce<br>a generování</td><td>z textu udělat fakta a z faktů věty</td><td>libovolný AI chat nebo agent, pokud mu dáte schéma tvrzení a zakážete vymýšlet čísla</td></tr>
+        <tr><td>Slití</td><td>jeden řádek na produkt, rozhodnout přednost</td><td>tabulka, ať už sdílená online, nebo lokální soubor</td></tr>
+        <tr><td>Zápis</td><td>dostat tabulku do feedu</td><td>import ve feedovém nástroji, API e-shopové platformy, nebo ruční doplnění u malého katalogu</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <details>
+    <summary>Jak to má postavené autor, kdyby se to hodilo</summary>
+    <p>Feed spravuje Mergado, agent je Claude a mluví spolu přes Mergado MCP. Vrstvy 1 až 6 běží jako čistý Python bez jediné závislosti, aby se daly přenést kamkoli. Vrstvy 4 a 5 <strong>nevolají žádný model</strong>: skript připraví dávku k předložení a odpověď zvaliduje, takže výměna modelu není zásah do postupu, jen jiný způsob vyplnění odpovědi.</p>
+    <p>Do validace je zabudovaná obrana proti té chybě z úvodu: otázka musí končit otazníkem a nesmí obsahovat slova „recenze“, „hodnocení“, „zákazníci“ ani „hvězd“. Původní špatná otázka byla podstrčena a validace ji odmítla, stejně jako podstrčené tvrzení s vymyšleným dokladem.</p>
+    <p>Když máte jiný stack, nejrychlejší cesta je zeptat se svého agenta, čím se v <em>něm</em> dá každá vrstva udělat. Postup je záměrně napsaný tak, aby na tuhle otázku šlo odpovědět.</p>
+  </details>
+</section>
+
+<footer class="end">
+  <p class="kicker">Jedna věta na závěr</p>
+  <p>Nejtěžší na tomhle postupu není žádný z těch šesti kroků. Je to rozhodnutí udělat je v tomhle pořadí, a nezkoušet skočit ze zdroje rovnou do feedu. Ta zkratka vypadá o hodinu rychlejší a stojí vás den, protože výsledkem je pole, které je formálně vyplněné a obsahově prázdné.</p>
+</footer>
+
+</div>
+<div class="wrap"><p><a class="backlink" href="./">&larr; Zpět na rychlý návod</a></p></div>
+</body>
+</html>
