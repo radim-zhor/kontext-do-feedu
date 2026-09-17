@@ -92,6 +92,8 @@
     display: grid; place-items: center;
   }
   .tile.self .tile-n { background: var(--sunk); color: var(--ink-faint); }
+  .tile.extra { border-style: dashed; margin-bottom: 0; }
+  .tile.extra .tile-n { background: transparent; border: 1px dashed var(--rule); color: var(--ink-faint); font-size: 1.15rem; }
   .tile-t {
     font-family: "Bricolage Grotesque", system-ui, sans-serif;
     font-weight: 700; font-size: var(--s-1); line-height: 1.15;
@@ -187,6 +189,15 @@
     </a>
 
   </div>
+
+  <a class="tile extra" href="https://mergado.com/ai-checklist" target="_blank" rel="noopener">
+    <div class="tile-n" aria-hidden="true">&#8250;</div>
+    <div>
+      <span class="tile-t">Úkoly na doma</span>
+      <span class="tile-d">Sedm kroků, kterými má e-shop projít. První tři jste dneska udělali, zbylé čtyři jsou na tento týden. Stránka je zatím anglicky.</span>
+      <span class="tile-go">Otevřít &rarr;</span>
+    </div>
+  </a>
 
   <footer>
     <h2>Až to budete chtít pro celý katalog</h2>
