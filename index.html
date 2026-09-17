@@ -198,7 +198,8 @@
     margin-block: 1rem;
     overflow-x: auto;
   }
-  .cols div { white-space: nowrap; padding-block: .1rem; }
+  .cols div { white-space: nowrap; padding-block: .1rem; color: var(--ink-soft); }
+  .cols .c-aux { color: var(--ink-faint); text-decoration: line-through; }
 
   .tip {
     border-left: 3px solid var(--accent-bright);
@@ -423,29 +424,38 @@ Jak má vypadat odpověď:
 
 Když máš k jednomu produktu tvrzení z recenze i z článku, udělej dvě otázky. První postav na recenzi, protože mluví přímo o tomhle produktu.
 
+Výhrady a nedostatky nevynechávej. Když zákazníci na něčem něco kritizují, napiš to pravdivě. Ale takový řádek mi označ, ať se můžu rozhodnout, jestli ho chci zveřejnit.
+
 Pak mi to dej jako tabulku. Sloupce pojmenuj přesně takhle, i s mezerami a závorkami:
 
+nazev_produktu
 id
 g:question_and_answer { @@POSITION = 1 } | g:question
 g:question_and_answer { @@POSITION = 1 } | g:answer
 g:question_and_answer { @@POSITION = 2 } | g:question
 g:question_and_answer { @@POSITION = 2 } | g:answer
+poznamka
 
-Do sloupce id dej název produktu, já si ho pak nahradím svým ID.
+Do sloupce nazev_produktu dej název, ať poznám, o co jde. Sloupec id nech prázdný, doplním si ho sám.
+Do sloupce poznamka napiš "obsahuje výhradu" u řádků, kde odpověď zmiňuje nějaký nedostatek. Jinak ho nech prázdný.
 Jeden řádek je jeden produkt. Když produkt druhou otázku nemá, nech buňky prázdné.
 
 Tabulku mi vypiš rovnou v odpovědi a k tomu mi nabídni stejná data jako soubor CSV ke stažení.</pre>
   </div>
 
-  <p>Sloupce mají ta divná jména schválně. Jsou to názvy polí, do kterých se odpovědi ukládají v Google feedu, a když se sloupec jmenuje přesně takhle, většina feedových nástrojů si s tabulkou poradí sama.</p>
+  <p>Prostřední sloupce mají ta divná jména schválně. Jsou to názvy polí, do kterých se odpovědi ukládají v Google feedu, a když se sloupec jmenuje přesně takhle, většina feedových nástrojů si s tabulkou poradí sama.</p>
 
   <div class="cols">
-    <div>id</div>
+    <div><span class="c-aux">nazev_produktu</span> &nbsp;&larr; pro vaši orientaci</div>
+    <div>id &nbsp;&larr; doplníte sami</div>
     <div>g:question_and_answer { @@POSITION = 1 } | g:question</div>
     <div>g:question_and_answer { @@POSITION = 1 } | g:answer</div>
     <div>g:question_and_answer { @@POSITION = 2 } | g:question</div>
     <div>g:question_and_answer { @@POSITION = 2 } | g:answer</div>
+    <div><span class="c-aux">poznamka</span> &nbsp;&larr; pro vaši orientaci</div>
   </div>
+
+  <p><strong>Dva sloupce jsou jen pro vás.</strong> Název produktu proto, abyste v tabulce poznali, o co jde, a poznámka proto, abyste viděli, kde odpověď zmiňuje nějaký nedostatek. Před nahráním do feedu oba smažte, protože do feedu nepatří.</p>
 
   <div class="tip">
     <p>Číslo v závorce je pořadí otázky u produktu. Chcete třetí otázku? Přidejte další dvojici sloupců s dvojkou přepsanou na trojku. Nic jiného se nemění.</p>
@@ -457,7 +467,9 @@ Tabulku mi vypiš rovnou v odpovědi a k tomu mi nabídni stejná data jako soub
     <div class="step-n">4</div>
     <h2 class="step-t">A co s tou tabulkou</h2>
   </div>
-  <p>Vložte ji do Google Sheets nebo Excelu a ve sloupci <code>id</code> nahraďte názvy produktů svými ID z feedu. To je jediná ruční práce, která vás čeká.</p>
+  <p>Vložte ji do Google Sheets nebo Excelu a doplňte sloupec <code>id</code> podle názvů produktů vedle. To je jediná ruční práce, která vás čeká.</p>
+  <p><strong>Projděte si řádky s poznámkou.</strong> Jsou to odpovědi, kde zákazníci na něčem něco kritizovali, třeba že se materiál láme nebo že se špatně tiskne. Je to pravda a zákazníkovi to pomůže vybrat si správně. Zároveň je to text, který půjde do vašeho feedu, takže je to vaše rozhodnutí, ne rozhodnutí agenta. Projděte je a nechte jen ty, se kterými souhlasíte.</p>
+  <p>Pak smažte sloupce <code>nazev_produktu</code> a <code>poznamka</code>. Zůstanou vám jen ty s divnými názvy, a to je přesně to, co jde do feedu.</p>
   <p>Pak ji dostanete k produktům tím způsobem, který ve svém e-shopu používáte. Ve feedovém nástroji je na to import tabulky. V některých e-shopových platformách jde nahrát rovnou. A když máte pár desítek produktů, zvládnete to i ručně.</p>
   <p>Nevíte, jak to udělat zrovna ve vašem nástroji? Zeptejte se toho samého agenta. Řekněte mu, co používáte, a ukažte mu tu tabulku.</p>
 </section>
