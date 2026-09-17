@@ -1,0 +1,520 @@
+<!doctype html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Tři prompty, kterými z recenzí a blogu vytáhnete otázky a odpovědi k produktům. Workshop Shopcamp 2026.">
+<meta property="og:title" content="Kontext za 20 minut">
+<meta property="og:description" content="Tři prompty, kterými z recenzí a blogu vytáhnete otázky a odpovědi k produktům.">
+<meta name="robots" content="noindex">
+<style>
+  :root { color-scheme: light dark; padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); }
+  body { margin: 0; }
+  img { max-width: 100%; }
+  [hidden] { display: none !important; }
+</style>
+<title>Kontext za 20 minut</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=JetBrains+Mono:wght@400&family=Source+Sans+3:wght@400;600&display=swap">
+<style>
+  :root {
+    --ground: #f6f6f3;
+    --surface: #ffffff;
+    --sunk: #eceee7;
+    --ink: #1b1f1a;
+    --ink-soft: #4c554a;
+    --ink-faint: #7b857a;
+    --rule: #d8ddd4;
+    --accent: #37702a;
+    --accent-bright: #7fd83d;
+    --accent-soft: #e9f4e0;
+    --shadow: 0 1px 3px rgba(27, 31, 26, .07);
+
+    --s--1: clamp(.82rem, .8rem + .1vw, .88rem);
+    --s-0: clamp(1.04rem, 1rem + .2vw, 1.14rem);
+    --s-1: clamp(1.2rem, 1.12rem + .35vw, 1.4rem);
+    --s-2: clamp(1.5rem, 1.32rem + .8vw, 2.05rem);
+    --s-3: clamp(2rem, 1.6rem + 1.7vw, 3.1rem);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ground: #14170f;
+      --surface: #1d2118;
+      --sunk: #0e1109;
+      --ink: #e9ece4;
+      --ink-soft: #b0b8a9;
+      --ink-faint: #838c7d;
+      --rule: #333a2c;
+      --accent: #9fd97f;
+      --accent-bright: #7fd83d;
+      --accent-soft: #1f2a16;
+      --shadow: 0 1px 3px rgba(0, 0, 0, .35);
+    }
+  }
+  :root[data-theme="dark"] {
+    --ground: #14170f;
+    --surface: #1d2118;
+    --sunk: #0e1109;
+    --ink: #e9ece4;
+    --ink-soft: #b0b8a9;
+    --ink-faint: #838c7d;
+    --rule: #333a2c;
+    --accent: #9fd97f;
+    --accent-bright: #7fd83d;
+    --accent-soft: #1f2a16;
+    --shadow: 0 1px 3px rgba(0, 0, 0, .35);
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    background: var(--ground);
+    color: var(--ink);
+    font-family: "Source Sans 3", system-ui, -apple-system, sans-serif;
+    font-size: var(--s-0);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap { max-width: 40rem; margin-inline: auto; padding-inline: 20px; padding-block: 0 3.5rem; }
+
+  h1, h2, .step-t {
+    font-family: "Bricolage Grotesque", system-ui, sans-serif;
+    font-weight: 700;
+    letter-spacing: -.02em;
+    text-wrap: balance;
+  }
+
+  header.top { padding-block: 3rem 1.75rem; }
+  h1 { font-size: var(--s-3); line-height: 1; margin: 0; }
+  .sub { font-size: var(--s-1); color: var(--ink-soft); margin: 1rem 0 0; max-width: 30rem; text-wrap: pretty; }
+
+  .outcome {
+    background: var(--accent-soft);
+    border: 1px solid var(--accent);
+    border-radius: 8px;
+    padding: 1rem 1.15rem;
+    margin-block: 1.75rem;
+  }
+  .outcome p { margin: 0; }
+  .outcome .oc-h {
+    font-weight: 600;
+    font-size: var(--s--1);
+    text-transform: uppercase;
+    letter-spacing: .07em;
+    color: var(--accent);
+    margin-bottom: .3rem;
+  }
+
+  p { margin: 0 0 1rem; max-width: 34rem; text-wrap: pretty; }
+  p:last-child { margin-bottom: 0; }
+  ul { margin: 0 0 1rem; padding-left: 1.15rem; max-width: 34rem; }
+  li { margin-bottom: .4rem; }
+  strong { font-weight: 600; }
+  a { color: var(--accent); text-underline-offset: .18em; }
+  a:focus-visible, button:focus-visible, summary:focus-visible {
+    outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px;
+  }
+
+  .step { padding-block: 2rem; border-top: 1px solid var(--rule); }
+  .step-head { display: flex; gap: .85rem; align-items: baseline; margin-bottom: .85rem; }
+  .step-n {
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: var(--s--1);
+    color: var(--surface);
+    background: var(--accent);
+    width: 1.7rem; height: 1.7rem;
+    border-radius: 50%;
+    display: grid; place-items: center;
+    flex: none;
+    align-self: center;
+  }
+  .step-t { font-size: var(--s-2); line-height: 1.1; margin: 0; }
+
+  .prompt {
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    box-shadow: var(--shadow);
+    margin-block: 1rem;
+    overflow: hidden;
+  }
+  .prompt-bar {
+    display: flex; justify-content: space-between; align-items: center;
+    gap: .75rem;
+    padding: .5rem .5rem .5rem .85rem;
+    border-bottom: 1px solid var(--rule);
+    background: var(--sunk);
+  }
+  .prompt-bar span {
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: .7rem; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-faint);
+  }
+  button.copy {
+    font: inherit;
+    font-size: var(--s--1);
+    font-weight: 600;
+    background: var(--accent);
+    color: #fff;
+    border: 0;
+    border-radius: 5px;
+    padding: .35rem .8rem;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  :root[data-theme="dark"] button.copy, :root:not([data-theme="light"]) button.copy { color: #14170f; }
+  @media (prefers-color-scheme: light) { :root:not([data-theme="dark"]) button.copy { color: #fff; } }
+  button.copy:hover { filter: brightness(1.08); }
+  button.copy.done { background: var(--ink-faint); }
+  .prompt pre {
+    margin: 0;
+    padding: .9rem;
+    overflow-x: auto;
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: .8rem;
+    line-height: 1.55;
+    white-space: pre-wrap;
+    word-break: break-word;
+    max-height: 18rem;
+    overflow-y: auto;
+  }
+
+  details {
+    border: 1px dashed var(--rule);
+    border-radius: 8px;
+    padding: .7rem .9rem;
+    margin-block: 1rem;
+    background: var(--surface);
+  }
+  summary { cursor: pointer; font-weight: 600; font-size: var(--s--1); }
+  details[open] summary { margin-bottom: .6rem; }
+  details .hint { font-size: var(--s--1); color: var(--ink-soft); margin-bottom: .6rem; }
+
+  .cols {
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: .78rem;
+    background: var(--sunk);
+    border-radius: 6px;
+    padding: .75rem .85rem;
+    margin-block: 1rem;
+    overflow-x: auto;
+  }
+  .cols div { white-space: nowrap; padding-block: .1rem; color: var(--ink-soft); }
+  .cols .c-aux { color: var(--ink-faint); text-decoration: line-through; }
+
+  .tip {
+    border-left: 3px solid var(--accent-bright);
+    padding-left: .9rem;
+    margin-block: 1.25rem;
+    color: var(--ink-soft);
+    font-size: var(--s--1);
+  }
+  .tip p { margin-bottom: .5rem; }
+
+  footer.end { padding-block: 2rem 0; border-top: 1px solid var(--rule); margin-top: 2rem; }
+  footer.end h2 { font-size: var(--s-1); margin: 0 0 .6rem; }
+  footer.end p { font-size: var(--s--1); color: var(--ink-soft); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="top">
+  <h1>Kontext za 20 minut</h1>
+  <p class="sub">Váš e-shop už ví, proč si u vás lidé kupují to, co kupují. Ve feedu z toho ale není nic. Tohle je nejkratší cesta, jak to změnit.</p>
+</header>
+
+<div class="outcome">
+  <p class="oc-h">Co budete mít na konci</p>
+  <p>Tabulku otázek a odpovědí ke svým produktům, sestavenou z toho, co píšou vaši zákazníci a co stojí na vašem blogu. Připravenou tak, aby šla nahrát k produktům do feedu.</p>
+</div>
+
+<p><strong>Co k tomu potřebujete:</strong> jakýkoli AI chat, který používáte. Nic se neinstaluje, nic se nestahuje. Funguje to i na telefonu.</p>
+
+<p><strong>Data:</strong> nejlepší je vzít vlastní, protože pak si odnesete něco použitelného. Když je zrovna po ruce nemáte, u každého kroku je připravená ukázka a můžete jet na ní.</p>
+
+<section class="step">
+  <div class="step-head">
+    <div class="step-n">1</div>
+    <h2 class="step-t">Co o produktech vědí vaši zákazníci</h2>
+  </div>
+  <p>Otevřete si svoji stránku na Heurece nebo recenze ve svém e-shopu a zkopírujte dvacet třicet recenzí. Klidně i s překlepy, to nevadí. Pak vložte tenhle prompt a pod něj ty recenze.</p>
+
+  <div class="prompt">
+    <div class="prompt-bar"><span>Prompt 1</span><button class="copy" data-t="p1">Zkopírovat</button></div>
+    <pre id="p1">Jsem majitel e-shopu. Níže ti vložím recenze na produkty z mého e-shopu.
+
+Vytáhni z nich tvrzení o produktech. Tvrzení je věta o tom, co o produktu platí. Není to citace toho, co kdo napsal.
+
+Drž se těchhle pravidel:
+- Piš jen to, co v recenzích opravdu je. Nic nedoplňuj z toho, co víš odjinud.
+- Nevymýšlej žádná čísla. Ani hodnocení, ani parametry, které v textu nejsou.
+- U každého tvrzení uveď, ze které recenze pochází.
+- Když z recenze o produktu nic neplyne (třeba "funguje" nebo "spokojenost"), nech ji být a napiš, že z ní nic nevzniklo.
+- Pozor, stejná recenze se někdy objeví u víc produktů. Když to uvidíš, upozorni mě.
+
+U každého produktu mi dej:
+- k čemu produkt lidé používají
+- co na něm chválí
+- co mu vytýkají
+- pro koho nebo pro co se nehodí
+
+Na konci mi napiš, které tři věci se v recenzích opakují nejčastěji napříč produkty.
+
+RECENZE:
+[sem vložte recenze]</pre>
+  </div>
+
+  <details>
+    <summary>Nemám po ruce vlastní recenze, chci ukázková data</summary>
+    <p class="hint">Skutečné recenze z e-shopu s 3D tiskem, i s překlepy. Zkopírujte je a vložte pod prompt.</p>
+    <div class="prompt">
+      <div class="prompt-bar"><span>Ukázkové recenze</span><button class="copy" data-t="d1">Zkopírovat</button></div>
+      <pre id="d1">Produkt: PETG filament 1,75 mm černý Professional Lab 1 kg
+Hodnocení: 4,5/5
+Klady: Dobrá přilnavost vrstev u namáhaných dílů. Minimální deformace u velkých dílů. Detailní a přesný tisk, hladké stěny, jemné detaily. Vysoká odolnost materiálu. Stálý průměr struny. Dobře drží na podložce. Minimální vláknění. Nízký zápach při tisku.
+
+Produkt: ASA CF filament černý 1,75 mm Innovatefil 750 g
+Hodnocení: 2/5
+Klady: krásný povr jako u každého CF materiálu
+Zápory: křehký jak blázen, ucpává trysku 0,4, horor na tisk
+
+Produkt: INNOVATEFIL PETG/CF filament černý (natural) 1,75 mm
+Hodnocení: 2/5
+Klady: krásný povr jako u každého CF materiálu
+Zápory: křehký jak blázen, ucpává trysku 0,4, horor na tisk
+
+Produkt: Prusa Nextruder tryska ObXidian 0,6 mm
+Hodnocení: 5/5
+Klady: Menší šance na ucpání oproti 0,4
+
+Produkt: Prusa Hotend brass High Flow 0,4 mm
+Hodnocení: 5/5
+Klady: funguje na CORE ONE+
+
+Produkt: Prusa Nextruder Silicone Sock
+Hodnocení: 5/5
+Klady: funguje na CORE ONE+
+
+Produkt: Prusa Nextruder tryska ObXidian 0,4 mm
+Hodnocení: 5/5
+Klady: funguje
+
+Produkt: PLA filament 1,75 mm jasný žlutý Devil Design 1 kg
+Hodnocení: 5/5
+Text: Pěkná a stálá barva, dobře se tiskne.
+
+Produkt: PETG filament 1,75 mm Devil Design 2. jakost
+Hodnocení: 5/5
+Klady: dobrý material aj ked oznacia ako 2 akost
+
+Produkt: AK Interactive AK PLAYMARKERS akrylový fix AKM032
+Hodnocení: 5/5
+Text: Na vybarvování modelú výborné
+
+Produkt: AK Interactive AK Real Colors Marker Flat Black
+Hodnocení: 5/5
+Text: Na kreslení a vybarvování nejlepší. Na malinkatý vybarvování ůplně nejlepší.
+
+Produkt: AK Interactive AK Real Colors Marker Flat White
+Hodnocení: 5/5
+Text: Na mrňouzky je to nejlepší.
+
+Produkt: Vallejo Hobby Spray Paint 28005 US Olive Drab 400 ml
+Hodnocení: 5/5
+Text: Na vetší plochy bezva.
+
+Produkt: Materialpro3D Štípačky filamentu 170 štípací kleště
+Hodnocení: 5/5
+Text: Na modely výborný.
+
+Produkt: Filament PM 1,75 SILK Golden Glory, 1 kg
+Hodnocení: 5/5
+Text: Tisk bez problémů, materiál má velmi pěkný lesk a barva je sytá.
+
+Produkt: Prusa Pokročilý filtrační systém
+Hodnocení: 5/5
+Text: Filtr funguje jak má</pre>
+    </div>
+  </details>
+
+  <div class="tip">
+    <p>Všimněte si dvou věcí ve výsledku. Z „funguje“ nevzniklo nic, a to je správně. A dvě recenze jsou slovo od slova stejné u dvou různých produktů, což je u hodnotících portálů běžné a je dobré o tom vědět.</p>
+  </div>
+</section>
+
+<section class="step">
+  <div class="step-head">
+    <div class="step-n">2</div>
+    <h2 class="step-t">Co o nich víte vy</h2>
+  </div>
+  <p>Vyberte jeden článek ze svého blogu, ideálně takový, který lidem radí při výběru. Zkopírujte jeho text a vložte ho pod tenhle prompt.</p>
+
+  <div class="prompt">
+    <div class="prompt-bar"><span>Prompt 2</span><button class="copy" data-t="p2">Zkopírovat</button></div>
+    <pre id="p2">Jsem majitel e-shopu. Níže ti vložím text jednoho článku z našeho blogu.
+
+Vytáhni z něj tvrzení, která zákazníkovi pomůžou vybrat si mezi dvěma produkty. Vynech všechno ostatní.
+
+U každého tvrzení mi napiš:
+- čeho se týká (jaký typ produktu, ne konkrétní kus)
+- co o něm platí
+- co z toho plyne pro zákazníka, obyčejnými slovy
+- kdy to naopak neplatí, nebo co si s tím lidé pletou
+- jak o tom mluví zákazníci, včetně nespisovných výrazů
+
+Drž se těchhle pravidel:
+- Jen to, co je v článku. Nic z toho, co víš odjinud.
+- Nevymýšlej čísla.
+- Když si článek někde protiřečí, řekni mi to a nech obě verze.
+
+Na závěr u každého tvrzení napiš, podle čeho v katalogu poznám produkty, kterých se týká. Jestli podle názvu, kategorie nebo parametru. A upozorni mě, kde by mě takové hledání mohlo zradit.
+
+ČLÁNEK:
+[sem vložte text článku]</pre>
+  </div>
+
+  <details>
+    <summary>Nemám po ruce vlastní článek, chci ukázková data</summary>
+    <p class="hint">Zkrácený skutečný článek z blogu e-shopu s 3D tiskem.</p>
+    <div class="prompt">
+      <div class="prompt-bar"><span>Ukázkový článek</span><button class="copy" data-t="d2">Zkopírovat</button></div>
+      <pre id="d2">Abrazivní filamenty
+
+Víte, že průměrná šířka lidského vlasu je obvykle 50 až 100 mikrometrů? Zhruba stejná je i velikost vláken, která se přidávají do 3D tiskových filamentů. Materiálů s příměsemi různých vláken je celá řada a spojuje je jedna vlastnost: jsou abrazivní.
+
+Abrazivní filamenty jsou ty, které při tisku nadměrně opotřebují trysku vaší 3D tiskárny. Obsahují totiž tvrdé částice, například uhlíková vlákna (carbon fiber), a skvěle se tak hodí pro tisk funkčních dílů, kdy oceníte extra pevnost a odolnost. Pro jejich používání je však potřeba mít na tiskárně namontovanou trysku z tvrzené oceli (hardened steel) nebo její ekvivalent.
+
+Uhlíková vlákna jsou většinou nasekaná na drobné trubičky a tvoří typicky 10 až 30 % hmotnosti filamentu. Nejčastěji se setkáme s CF-15 nebo CF-20, tedy filamentem s patnácti či dvaceti procenty uhlíkových vláken, protože při větších koncentracích vzrůstá riziko, že vlákno bude příliš křehké a bude se lámat ještě na špulce.
+
+Dá se říct, že pro každý druh materiálu se dá sehnat jeho carbon fiber verze. Máme tedy PLA-CF, PETG-CF, Nylon-CF (neboli PA-CF), ABS-CF, ASA-CF, PC-CF, ale i Flex-CF nebo třeba PPS-CF a PEEK-CF. V případě PLA se jedná zejména o kosmetickou záležitost, výtisky mívají krásný matný texturovaný povrch. U ostatních materiálů uhlíková vlákna reálně přidávají na celkové pevnosti výtisku a soudržnosti vrstev. Zároveň také zaručují rozměrovou stabilitu, výplň ve filamentu totiž zamezuje deformaci výrobku během tisku (warping).
+
+Mezi další podobné příměsi patří skelná vlákna (glass fiber) a také kevlarová vlákna (aramid fiber). Zatímco uhlíková vlákna jsou lehká, jejich nevýhodou je křehkost. Kevlarová vlákna jsou naopak pružná a dodají filamentu odolnost proti nárazu a oděru. Skelná vlákna jsou vlastnostmi někde uprostřed, jejich hlavní výhodou má být lepší cena. Ta je v praxi ale srovnatelná s carbon fiber materiály, protože uhlíkových vláken se zkrátka vyrobí a prodá větší množství.
+
+Abrazivitu (česky brusnost) určuje velikost a povaha částic přimíchaných do daného polymeru. Kromě zmíněných příměsí existují také ESD filamenty plněné technickým uhlíkem, fosforescenční materiály, dřevěné a kovové filamenty. Fosforescenční, tedy svítící ve tmě, jsou jemně abrazivní. Dřevěné filamenty obsahují rozemleté pecky, nikoli skutečné dřevo, a jsou lehce abrazivní. Kovové filamenty patří k nejvíce abrazivním vůbec.</pre>
+    </div>
+  </details>
+
+  <div class="tip">
+    <p>Tohle je ten krok, který většina e-shopů nikdy neudělá, a přitom je nejcennější. Váš blog obsahuje odpovědi, které zákazník nikde jinde nenajde, a ve feedu z nich není ani slovo.</p>
+  </div>
+</section>
+
+<section class="step">
+  <div class="step-head">
+    <div class="step-n">3</div>
+    <h2 class="step-t">Udělejte z toho data</h2>
+  </div>
+  <p>Zůstaňte ve stejné konverzaci, aby agent viděl obojí, a pošlete poslední prompt.</p>
+
+  <div class="prompt">
+    <div class="prompt-bar"><span>Prompt 3</span><button class="copy" data-t="p3">Zkopírovat</button></div>
+    <pre id="p3">Z tvrzení, která jsme právě vytáhli z recenzí i z článku, udělej otázky a odpovědi k produktům.
+
+Jak má vypadat otázka:
+- je to otázka, kterou reálně napíše zákazník, když vybírá
+- ptá se na situaci, třeba "Zvládne tenhle filament venkovní použití?"
+- NIKDY se neptá na recenze, hodnocení ani na to, co říkají zákazníci. Otázka typu "Co o produktu píšou zákazníci?" je špatně, takovou se nikdo neptá.
+- končí otazníkem
+
+Jak má vypadat odpověď:
+- odpovídá na tu otázku, ne na to, že to někdo někde napsal
+- začíná slovem Ano nebo Ne, když to jde
+- má nejvýš tři věty
+- když něco platí jen za určitých podmínek, napiš to
+
+Když máš k jednomu produktu tvrzení z recenze i z článku, udělej dvě otázky. První postav na recenzi, protože mluví přímo o tomhle produktu.
+
+Výhrady a nedostatky nevynechávej. Když zákazníci na něčem něco kritizují, napiš to pravdivě. Ale takový řádek mi označ, ať se můžu rozhodnout, jestli ho chci zveřejnit.
+
+Pak mi to dej jako tabulku. Sloupce pojmenuj přesně takhle, i s mezerami a závorkami:
+
+nazev_produktu
+id
+g:question_and_answer { @@POSITION = 1 } | g:question
+g:question_and_answer { @@POSITION = 1 } | g:answer
+g:question_and_answer { @@POSITION = 2 } | g:question
+g:question_and_answer { @@POSITION = 2 } | g:answer
+poznamka
+
+Do sloupce nazev_produktu dej název, ať poznám, o co jde. Sloupec id nech prázdný, doplním si ho sám.
+Do sloupce poznamka napiš "obsahuje výhradu" u řádků, kde odpověď zmiňuje nějaký nedostatek. Jinak ho nech prázdný.
+Jeden řádek je jeden produkt. Když produkt druhou otázku nemá, nech buňky prázdné.
+
+Tabulku mi vypiš rovnou v odpovědi a k tomu mi nabídni stejná data jako soubor CSV ke stažení.</pre>
+  </div>
+
+  <p>Prostřední sloupce mají ta divná jména schválně. Jsou to názvy polí, do kterých se odpovědi ukládají v Google feedu, a když se sloupec jmenuje přesně takhle, většina feedových nástrojů si s tabulkou poradí sama.</p>
+
+  <div class="cols">
+    <div><span class="c-aux">nazev_produktu</span> &nbsp;&larr; pro vaši orientaci</div>
+    <div>id &nbsp;&larr; doplníte sami</div>
+    <div>g:question_and_answer { @@POSITION = 1 } | g:question</div>
+    <div>g:question_and_answer { @@POSITION = 1 } | g:answer</div>
+    <div>g:question_and_answer { @@POSITION = 2 } | g:question</div>
+    <div>g:question_and_answer { @@POSITION = 2 } | g:answer</div>
+    <div><span class="c-aux">poznamka</span> &nbsp;&larr; pro vaši orientaci</div>
+  </div>
+
+  <p><strong>Dva sloupce jsou jen pro vás.</strong> Název produktu proto, abyste v tabulce poznali, o co jde, a poznámka proto, abyste viděli, kde odpověď zmiňuje nějaký nedostatek. Před nahráním do feedu oba smažte, protože do feedu nepatří.</p>
+
+  <div class="tip">
+    <p>Číslo v závorce je pořadí otázky u produktu. Chcete třetí otázku? Přidejte další dvojici sloupců s dvojkou přepsanou na trojku. Nic jiného se nemění.</p>
+  </div>
+</section>
+
+<section class="step">
+  <div class="step-head">
+    <div class="step-n">4</div>
+    <h2 class="step-t">A co s tou tabulkou</h2>
+  </div>
+  <p>Vložte ji do Google Sheets nebo Excelu a doplňte sloupec <code>id</code> podle názvů produktů vedle. To je jediná ruční práce, která vás čeká.</p>
+  <p><strong>Projděte si řádky s poznámkou.</strong> Jsou to odpovědi, kde zákazníci na něčem něco kritizovali, třeba že se materiál láme nebo že se špatně tiskne. Je to pravda a zákazníkovi to pomůže vybrat si správně. Zároveň je to text, který půjde do vašeho feedu, takže je to vaše rozhodnutí, ne rozhodnutí agenta. Projděte je a nechte jen ty, se kterými souhlasíte.</p>
+  <p>Pak smažte sloupce <code>nazev_produktu</code> a <code>poznamka</code>. Zůstanou vám jen ty s divnými názvy, a to je přesně to, co jde do feedu.</p>
+  <p>Pak ji dostanete k produktům tím způsobem, který ve svém e-shopu používáte. Ve feedovém nástroji je na to import tabulky. V některých e-shopových platformách jde nahrát rovnou. A když máte pár desítek produktů, zvládnete to i ručně.</p>
+  <p>Nevíte, jak to udělat zrovna ve vašem nástroji? Zeptejte se toho samého agenta. Řekněte mu, co používáte, a ukažte mu tu tabulku.</p>
+</section>
+
+<footer class="end">
+  <h2>Až to budete chtít dělat pro celý katalog</h2>
+  <p>Tenhle postup je udělaný tak, abyste si ho zvládli projít za dvacet minut a odešli s daty. Pro pět tisíc produktů a pro pravidelné aktualizace to chce opravdový řetězec, se sběrem dat, dohledatelností každého tvrzení a kontrolou limitů. <a href="../detail.html">Takhle vypadá, když se dotáhne do konce</a>, včetně čísel z reálného nasazení a věcí, které se u toho pokazily.</p>
+</footer>
+
+</div>
+
+<script>
+  document.querySelectorAll("button.copy").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var el = document.getElementById(btn.dataset.t);
+      if (!el) return;
+      var text = el.textContent;
+      var done = function () {
+        var old = btn.textContent;
+        btn.textContent = "Zkopírováno";
+        btn.classList.add("done");
+        setTimeout(function () { btn.textContent = old; btn.classList.remove("done"); }, 1800);
+      };
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(done, function () { fallback(text, done); });
+      } else {
+        fallback(text, done);
+      }
+    });
+  });
+  function fallback(text, done) {
+    try {
+      var ta = document.createElement("textarea");
+      ta.value = text;
+      ta.style.position = "fixed";
+      ta.style.opacity = "0";
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand("copy");
+      document.body.removeChild(ta);
+      done();
+    } catch (e) {
+      window.prompt("Zkopírujte text ručně:", text);
+    }
+  }
+</script>
+</body>
+</html>
