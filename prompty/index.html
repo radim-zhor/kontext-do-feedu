@@ -3,9 +3,9 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="description" content="Tři prompty, kterými z recenzí a blogu vytáhnete otázky a odpovědi k produktům. Workshop Shopcamp 2026.">
+<meta name="description" content="Čtyři prompty, kterými z recenzí a blogu vytáhnete otázky a odpovědi k produktům a obohatíte popisek. Workshop Shopcamp 2026.">
 <meta property="og:title" content="Kontext za 20 minut">
-<meta property="og:description" content="Tři prompty, kterými z recenzí a blogu vytáhnete otázky a odpovědi k produktům.">
+<meta property="og:description" content="Čtyři prompty, kterými z recenzí a blogu vytáhnete otázky a odpovědi k produktům a obohatíte popisek.">
 <meta name="robots" content="noindex">
 <style>
   :root { color-scheme: light dark; padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); }
@@ -210,6 +210,21 @@
   }
   .tip p { margin-bottom: .5rem; }
 
+  .added {
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: .7rem; letter-spacing: .08em; text-transform: uppercase;
+    color: var(--accent); margin-bottom: .75rem;
+  }
+  h3.sub-h {
+    font-family: "Bricolage Grotesque", system-ui, sans-serif;
+    font-size: var(--s-1); letter-spacing: -.01em; margin: 1.75rem 0 .6rem;
+  }
+  .scroll { overflow-x: auto; margin-block: 1rem; }
+  table.tbl { border-collapse: collapse; width: 100%; font-size: var(--s--1); }
+  table.tbl th, table.tbl td { text-align: left; padding: .45rem .6rem; border-bottom: 1px solid var(--rule); vertical-align: top; }
+  table.tbl th { font-weight: 600; color: var(--ink-soft); }
+  table.tbl tr:last-child td { border-bottom: 0; }
+
   footer.end { padding-block: 2rem 0; border-top: 1px solid var(--rule); margin-top: 2rem; }
   footer.end h2 { font-size: var(--s-1); margin: 0 0 .6rem; }
   footer.end p { font-size: var(--s--1); color: var(--ink-soft); }
@@ -225,7 +240,7 @@
 
 <div class="outcome">
   <p class="oc-h">Co budete mít na konci</p>
-  <p>Tabulku otázek a odpovědí ke svým produktům, sestavenou z toho, co píšou vaši zákazníci a co stojí na vašem blogu. Připravenou tak, aby šla nahrát k produktům do feedu.</p>
+  <p>Tabulku otázek a odpovědí ke svým produktům, sestavenou z toho, co píšou vaši zákazníci a co stojí na vašem blogu. Připravenou tak, aby šla nahrát k produktům do feedu. A k tomu popisek doplněný o to, co zákazník potřebuje vědět před nákupem.</p>
 </div>
 
 <p><strong>Co k tomu potřebujete:</strong> jakýkoli AI chat, který používáte. Nic se neinstaluje, nic se nestahuje. Funguje to i na telefonu.</p>
@@ -472,6 +487,95 @@ Tabulku mi vypiš rovnou v odpovědi a k tomu mi nabídni stejná data jako soub
   <p>Pak smažte sloupce <code>nazev_produktu</code> a <code>poznamka</code>. Zůstanou vám jen ty s divnými názvy, a to je přesně to, co jde do feedu.</p>
   <p>Pak ji dostanete k produktům tím způsobem, který ve svém e-shopu používáte. Ve feedovém nástroji je na to import tabulky. V některých e-shopových platformách jde nahrát rovnou. A když máte pár desítek produktů, zvládnete to i ručně.</p>
   <p>Nevíte, jak to udělat zrovna ve vašem nástroji? Zeptejte se toho samého agenta. Řekněte mu, co používáte, a ukažte mu tu tabulku.</p>
+</section>
+
+<section class="step" id="popisek">
+  <div class="step-head">
+    <div class="step-n">5</div>
+    <h2 class="step-t">Obohaťte popisek</h2>
+  </div>
+  <p class="added">Doplněno v listopadu 2026</p>
+  <p>Stejná tvrzení poslouží i popisku produktu. Nejde o to napsat ho celý znovu. Popisek od výrobce obvykle dobře popíše, co produkt umí, ale skoro nikdy neřekne, <strong>co k němu zákazník potřebuje a kdy se nehodí</strong>. Přesně to ale v tvrzeních máte, v polích podmínka a vymezení.</p>
+  <p>Zůstaňte ve stejné konverzaci a pod tenhle prompt vložte stávající popisek jednoho produktu.</p>
+
+  <div class="prompt">
+    <div class="prompt-bar"><span>Prompt 4</span><button class="copy" data-t="p4">Zkopírovat</button></div>
+    <pre id="p4">Teď z tvrzení, která jsme vytáhli z recenzí i z článku, obohať popisek produktu. Níže ti vložím jeho stávající popisek.
+
+Stávající text nepřepisuj ani nezkracuj. Nech ho, jak je, a pod něj připiš krátký blok s nadpisem "Co je dobré vědět před nákupem".
+
+Co do bloku patří:
+- jen tvrzení, která se tohoto produktu opravdu týkají (podle názvu, materiálu nebo kategorie)
+- přednostně to, co stávající popisek neříká: co zákazník k produktu potřebuje, kdy se nehodí, na co si dát pozor
+- výhrady z recenzí, napsané věcně jako vlastnost produktu, bez citace a bez zmínky o recenzích
+
+Drž se těchhle pravidel:
+- Nic, co už ve stávajícím popisku je, neopakuj.
+- Nevymýšlej čísla. Použij jen ta, která jsou v tvrzeních.
+- Když si tvrzení se stávajícím popiskem odporuje, nepiš ani jedno a upozorni mě.
+- Když tvrzení stojí na jediné recenzi, nebo na recenzi, která visí i u jiného produktu, označ mi ho.
+- Nejvýš čtyři odrážky, každá nejvýš dvě věty, celý blok do 600 znaků.
+- Vykej. Žádné superlativy, žádné výzvy ke koupi, žádné ceny.
+
+Výstup:
+1. Celý nový popisek jako jeden text: stávající popisek beze změny a pod ním nový blok.
+2. Pod ním tabulku se sloupci: odrážka | z jakého tvrzení vychází | zdroj (recenze nebo článek) | poznámka.
+
+POPISEK:
+[sem vložte stávající popisek]</pre>
+  </div>
+
+  <details>
+    <summary>Nemám po ruce vlastní popisek, chci ukázková data</summary>
+    <p class="hint">Zkrácený skutečný popisek výrobce k filamentu z ukázkových recenzí. Všimněte si, že o trysce v něm není ani slovo.</p>
+    <div class="prompt">
+      <div class="prompt-bar"><span>Ukázkový popisek</span><button class="copy" data-t="d4">Zkopírovat</button></div>
+      <pre id="d4">Produkt: ASA CF filament černý 1,75 mm Innovatefil 750 g
+
+Innovatefil ASA CF je technický filament založený na materiálu ASA (Acrylonitrile Styrene Acrylate), který je doplněn o přibližně 15 % uhlíkových vláken pro zvýšení tuhosti, odolnosti a rozměrové stability.
+
+Tento materiál kombinuje výhody ASA, tedy UV stabilitu, tepelnou odolnost a nízké smrštění, s výhodami uhlíkových vláken: vyšší pevnost, tuhost a lepší schopnost zachovat tvar i u větších dílů. Povrch výtisků je často matný, s profesionálním vzhledem.
+
+Díky svým vlastnostem se Innovatefil ASA CF hodí pro technické komponenty, konstrukční díly, modely vystavené mechanickému namáhání i pro aplikace, kde je třeba kombinace lehkosti a pevnosti (např. automobilové díly, drony, nosné konstrukce).
+
+Doporučené nastavení tisku: teplota tisku 250 až 270 °C, podložka 80 až 100 °C, rychlost 30 až 50 mm/s, uzavřená komora doporučena pro minimalizaci deformací.</pre>
+    </div>
+  </details>
+
+  <details>
+    <summary>Jak může vypadat výsledek</summary>
+    <p class="hint">Blok, který vznikl z ukázkových recenzí a ukázkového článku. Stávající popisek nad ním zůstává beze změny.</p>
+    <div class="prompt">
+      <div class="prompt-bar"><span>Nový blok pod popiskem</span></div>
+      <pre>Co je dobré vědět před nákupem
+- K tisku potřebujete trysku z tvrzené oceli nebo její ekvivalent. Uhlíková vlákna mosaznou trysku obrušují.
+- Na standardní trysce 0,4 mm se materiál může ucpávat.
+- Uhlíková vlákna přidávají tuhost, ale jsou křehká. Na díly, které mají snést nárazy, se hodí spíš filament s aramidovými vlákny.</pre>
+    </div>
+    <div class="scroll">
+      <table class="tbl">
+        <thead><tr><th>Odrážka</th><th>Zdroj</th><th>Poznámka</th></tr></thead>
+        <tbody>
+          <tr><td>Tvrzená tryska</td><td>článek</td><td>platí pro všechny filamenty s CF v názvu</td></tr>
+          <tr><td>Ucpávání na 0,4 mm</td><td>recenze</td><td><strong>výhrada, jediná recenze</strong>, navíc visí i u PETG/CF</td></tr>
+          <tr><td>Křehkost, aramid</td><td>článek + recenze</td><td>recenze křehkost potvrzuje</td></tr>
+          <tr><td><em>vynecháno:</em> pevnost a rozměrová stabilita</td><td>článek</td><td>už je ve stávajícím popisku</td></tr>
+          <tr><td><em>vynecháno:</em> UV odolnost ASA</td><td>článek</td><td>tvrzení se týká ASA bez uhlíkových vláken</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </details>
+
+  <div class="tip">
+    <p>Druhá odrážka stojí na jediné recenzi, která navíc visí i u jiného produktu. Je to pravda, kterou zákazník ocení, ale slabý doklad. Jestli ji zveřejníte, je vaše rozhodnutí, stejně jako u řádků s poznámkou ve čtvrtém kroku.</p>
+    <p>Stejně cenné jsou vynechané řádky. Tvrzení o UV odolnosti v článku platí pro ASA, ale výslovně ne pro variantu s uhlíkovými vlákny. Kdo by vybíral produkty jen podle slova ASA v názvu, napsal by do popisku nepravdu.</p>
+  </div>
+
+  <h3 class="sub-h">Jak to dostat do feedu</h3>
+  <p><strong>Pozor na import.</strong> Import tabulky zapisuje celou hodnotu pole, takže by původní popisek přepsal. Proto prompt vrací celý text i se starým popiskem. Když ho importujete, importujete obojí.</p>
+  <p><strong>Pro celý katalog to rozdělte podle zdroje.</strong> Tvrzení z článku platí pro celou skupinu produktů, takže se blok napíše jednou a připojí na konec popisku všem produktům ve skupině, ve feedovém nástroji pravidlem nad výběrem produktů. Do takového bloku dejte jen to, co platí bez výjimky pro celou skupinu, třeba potřebu tvrzené trysky. Blok nevidí popisek konkrétního produktu, takže si s ním jinak může odporovat. Per produkt se řeší jen to, co přišlo z recenzí. Pravidlo ať zapisuje do pole, které odchází do kanálu (u Google <code>g:description</code>), ne do vstupního popisu.</p>
+  <p><strong>Pravidel nepřibývá.</strong> Na každou vrstvu stačí jedno hromadné pravidlo s tabulkou řádků: jedno pro skupiny produktů (řádek = výběr skupiny), jedno pro jednotlivé produkty (řádek = ID produktu). Pro celý katalog stačí tabulka s jedním doplňkem na produkt, Import dat do pomocného elementu a jedno pravidlo, které ho připojí k popisku. Víc v <a href="../detail.html#popisek">technickém postupu</a>.</p>
+  <p><strong>Začněte vzorkem.</strong> Projděte pět až deset produktů, opravte, co nesedí, a teprve pak pusťte celou skupinu.</p>
 </section>
 
 <footer class="end">

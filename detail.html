@@ -574,8 +574,99 @@ g:product_highlight   { @@POSITION = 2 }</code></pre>
     <span class="note-label">Tři věci, na které si dát pozor</span>
     <p><strong>Překlep v hlavičce neskončí chybou.</strong> Většina importů neznámý sloupec prostě založí jako nové pole, takže si vyrobíte pole, které se nikam nepropíše a nikdo si toho nevšimne. Po prvním importu porovnejte seznam polí ve feedu proti hlavičkám tabulky.</p>
     <p><strong>Nahraný soubor je snímek, ne zdroj.</strong> Pokud chcete, aby se změna v tabulce propsala sama, musí tabulka ležet na adrese, kterou si nástroj sám stahuje. Publikovaný list z tabulkového procesoru na to stačí.</p>
-    <p><strong>Doplnění popisu do tabulky nepatří.</strong> Import zapisuje celou hodnotu, takže by původní popis přepsal. Připojení věty na konec stávajícího textu je jiná operace a řeší se jinak.</p>
+    <p><strong>Doplnění popisu do tabulky nepatří.</strong> Import zapisuje celou hodnotu, takže by původní popis přepsal. Připojení věty na konec stávajícího textu je jiná operace, viz <a href="#popisek">Doplnění popisu</a>.</p>
   </div>
+</section>
+
+<section id="popisek">
+  <h2>Doplnění popisu</h2>
+  <p>Popisek je jediné pole, které už má každý produkt vyplněné, a právě proto se s ním zachází jinak než s otázkami a highlighty. Cílem není nový text, ale <strong>doplněk</strong>: krátký blok pod stávajícím popiskem, postavený z polí podmínka a vymezení. Výrobce popíše, co produkt umí. Málokdy napíše, co k němu zákazník potřebuje a kdy se nehodí.</p>
+
+  <h4>Co do doplňku patří</h4>
+  <p>Jen to, co stávající popisek neříká. U filamentu s uhlíkovými vlákny z testovaného katalogu popisek výrobce vyjmenoval teploty, rychlost i komoru, ale o trysce neměl ani slovo. Přitom tvrzení z článku říká, že vlákna mosaznou trysku brzy obrousí a je potřeba tryska z tvrzené oceli. Přesně tahle informace zákazníkovi před nákupem chybí.</p>
+
+  <div class="note verified">
+    <span class="note-label">Doplněk pro segment z testovacího běhu</span>
+    <p>„Co je dobré vědět: k tisku tohoto materiálu potřebujete trysku z tvrzené oceli nebo její ekvivalent. Uhlíková vlákna tvoří typicky 10 až 30 % hmotnosti struny a mosaznou trysku obrušují zevnitř i zvenku, a to až o desítky mikronů. U technických polymerů vlákna přidávají pevnost i soudržnost vrstev a zaručují rozměrovou stabilitu.“</p>
+    <p>Jedna věta pro celý segment, napsaná jednou a připojená ke všem produktům, které selektor segmentu vybral.</p>
+  </div>
+
+  <h4>Dvě cesty zápisu podle zdroje</h4>
+  <p><strong>Tvrzení z článku</strong> platí pro skupinu, takže se z něj píše jeden doplněk na segment. Do feedu ho dostane jedno pravidlo nad výběrem produktů, které text připojí na konec pole. Výběr je tentýž selektor, který už segment má.</p>
+
+  <div class="note verified">
+    <span class="note-label">Ověřeno 4. 11. 2026 na katalogu s 3167 produkty</span>
+    <p>Pravidlo Přepisování s hodnotou <code>%g:description%</code> a pod ním blok připojilo doplněk produktům segmentu s uhlíkovými vlákny (75 produktů, ověřeno na vzorku) a původní popisek nechalo beze změny. Druhé pravidlo nad jediným produktem pak připsalo řádek z jeho recenze. Vrstvy se skládají v pořadí pravidel: nejdřív segment, pak produkt.</p>
+    <p><strong>Pozor na pole.</strong> Pravidlo musí zapisovat do pole, které jde ven do kanálu (u Google <code>g:description</code>), ne do vstupního popisu. Převod formátu proběhne dřív a doplněk ve vstupním poli by se do výstupu nedostal. V prvním pokusu přesně tohle nastalo.</p>
+  </div>
+
+  <div class="note">
+    <span class="note-label">Co ukázal výstup po přegenerování</span>
+    <p>Doplněk pro segment nevidí popisek konkrétního produktu, takže si s ním může odporovat. U jednoho PETG filamentu s uhlíkovými vlákny výrobce píše o vysoké odolnosti vůči nárazu, a pod tím doplněk tvrdí, že uhlíková vlákna jsou křehká a na nárazy se hodí spíš aramid. Obojí má zdroj, ale vedle sebe to zákazníka zmate.</p>
+    <p>Do doplňku pro segment proto patří jen to, co platí bez výjimky pro celou skupinu, typicky podmínky použití jako tvrzená tryska. Vlastnosti, které se mezi produkty liší, jako pevnost nebo křehkost, se řeší per produkt, kde prompt rozpor s popiskem zachytí.</p>
+  </div>
+  <p><strong>Tvrzení z recenzí</strong> patří jednomu produktu, takže se doplněk skládá per produkt. Tady pozor na import: zapisuje celou hodnotu pole, takže tabulka musí nést celý nový popisek včetně toho původního, ne jen doplněk. Před importem proto zkontrolujte na vzorku, že původní text zůstal beze změny.</p>
+
+  <h4>Kolik pravidel to stojí při škálování</h4>
+  <p>Naivní postup dělá na každý segment a každý produkt vlastní výběr a vlastní pravidlo. S počtem produktů pak roste i počet pravidel a projekt se stane nepřehledným. Nutné to není: na každou vrstvu stačí <strong>jedno hromadné pravidlo</strong>, které nese tabulku řádků.</p>
+  <div class="scroll">
+    <table>
+      <thead><tr><th>Vrstva</th><th>Typ pravidla v Mergadu</th><th>Řádek pravidla</th><th>Co roste s katalogem</th></tr></thead>
+      <tbody>
+        <tr><td>Tvrzení z článků</td><td>Hromadné přepisování dle výběrů</td><td>výběr segmentu → text doplňku</td><td>řádky a výběry, jeden na segment</td></tr>
+        <tr><td>Tvrzení z recenzí</td><td>Hromadné přepisování dle hodnot</td><td>ID produktu → text doplňku</td><td>jen řádky, žádné nové výběry</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="note verified">
+    <span class="note-label">Ověřeno 4. 11. 2026 na katalogu s 3167 produkty</span>
+    <p>Šest segmentů ze 138 produktů a 16 produktů s doplňkem z recenzí: <strong>2 pravidla a 6 výběrů</strong> místo 22 pravidel a 22 výběrů. Obě pravidla umí v hodnotě <code>%g:description%</code>, takže připojují a nepřepisují. Kde se vrstvy potkají, recenze se připíše pod blok ze segmentu.</p>
+    <p>Přidání dalšího produktu z recenzí je nový řádek v existujícím pravidle, přidání segmentu nový výběr a řádek. Počet pravidel zůstává dva.</p>
+  </div>
+
+  <p><strong>Na co si dát pozor u hromadných pravidel:</strong></p>
+  <ul>
+    <li><strong>Segmenty se nesmí překrývat.</strong> Produkt ve dvou výběrech by dostal dva bloky, nebo by jeden přepsal druhý. V testu se nepřekrývaly: součet výběrů i jejich sjednocení dalo shodně 138. Tahle kontrola patří ke každé změně selektorů.</li>
+    <li><strong>Nadpis bloku jen jednou.</strong> Řádek z recenze u produktu, který je zároveň v segmentu, už nadpis nese a připisuje jen odrážku. Generátor tabulky proto musí vědět, které produkty segment pokrývá.</li>
+    <li><strong>Úprava pravidla přepisuje celou tabulku řádků.</strong> Tabulka se proto má generovat ze zdroje, ne ručně upravovat v pravidle.</li>
+    <li><strong>Doplněk může zopakovat, co už výrobce napsal.</strong> U filamentu se skelnými vlákny výrobce tvrzenou trysku zmiňuje sám a blok ji pak opakuje. Hromadné pravidlo to nepozná, kontrola na vzorku ano.</li>
+  </ul>
+
+  <h4>Pro celý katalog: jeden import místo tabulek v pravidlech</h4>
+  <p>Dvě hromadná pravidla stačí na desítky segmentů a stovky produktů. S rostoucím katalogem ale rostou výběry (jeden na segment) a tabulky řádků, které se musí držet v souladu. Pro tisíce produktů je čistší přesunout skládání ven z Mergada:</p>
+  <ol>
+    <li>Řetězec sám vyhodnotí selektory segmentů a pro každý produkt sestaví <strong>jeden hotový doplněk</strong>: odrážky ze segmentu i z recenzí dohromady, rozpory vyřešené dřív, než text vznikne.</li>
+    <li>Výsledek je tabulka o dvou sloupcích, ID produktu a doplněk.</li>
+    <li>V Mergadu ji <strong>Import dat</strong> nahraje do skrytého pomocného elementu, takže nic nepřepíše.</li>
+    <li>Jedno pravidlo <strong>Přepisování</strong> pak u produktů, které doplněk mají, připojí k popisku nadpis a pomocný element: <code>%g:description%</code>, prázdný řádek, nadpis, doplněk.</li>
+  </ol>
+  <div class="scroll">
+    <table>
+      <thead><tr><th>Varianta</th><th>Pravidla</th><th>Výběry</th><th>Co roste s katalogem</th></tr></thead>
+      <tbody>
+        <tr><td>Pravidlo na segment a produkt</td><td>jedno na každý segment a produkt</td><td>jeden na každý segment a produkt</td><td>pravidla i výběry</td></tr>
+        <tr><td>Hromadná pravidla</td><td>2</td><td>jeden na segment</td><td>výběry a řádky</td></tr>
+        <tr><td>Import a připojení</td><td>2</td><td>1 (produkt má doplněk)</td><td>jen řádky v importní tabulce</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="note verified">
+    <span class="note-label">Ověřeno 5. 11. 2026 na stejném katalogu</span>
+    <p>Tabulka se 153 řádky (138 ze segmentů, 16 z recenzí, jeden produkt v obou), jeden import a jedno přepisování. Na vzorku 19 produktů se doplněk připojil všude, kde měl, včetně víceřádkových hodnot. U produktu, kde se zdroje potkaly, vyšel jeden nadpis a pod ním obě odrážky. Produkt bez doplňku zůstal beze změny.</p>
+    <p>Po přegenerování celého katalogu bez chyb: doplněk má ve výstupu právě 153 produktů, nadpis bloku je u každého jednou a žádný popisek nepřekročil 5 000 znaků (přes 4 000 znaků má jen jeden).</p>
+  </div>
+  <p>Co tím odpadá: hlídání překryvu segmentů v Mergadu, nadpis jen jednou i ruční údržba tabulek v pravidlech. To všechno řeší řetězec, kde se to dá i otestovat. Aktualizace znamená nahrát novou tabulku, pravidla se nemění. Při tisících produktů je dobré tabulku vystavit na stálé adrese, aby si ji import při každém přegenerování načetl sám.</p>
+  <p>Co zůstává: kontrola délky (původní popisek a doplněk musí dohromady vejít do limitu kanálu, u Googlu 5 000 znaků) a kontrola opakování textu výrobce. Obojí se dá automatizovat v řetězci, protože ten zná původní popisek.</p>
+
+  <h4>Kontroly, které se vyplatí</h4>
+  <ul>
+    <li>Doplněk neopakuje nic, co už v popisku je. Když si tvrzení s popiskem odporuje, nepíše se ani jedno a rozhodne člověk.</li>
+    <li>Čísla se jen přenášejí z tvrzení, stejně jako jinde v postupu.</li>
+    <li>Výhrada z jediné recenze, nebo z recenze sdílené s jiným produktem, se označí a zveřejní až po rozhodnutí člověka.</li>
+    <li>Délka bloku má strop, aby doplněk nepřerostl původní popisek.</li>
+  </ul>
+  <p>Hotový prompt i s ukázkou je v <a href="./prompty/#popisek">pátém kroku rychlého návodu</a>.</p>
 </section>
 
 <section>
